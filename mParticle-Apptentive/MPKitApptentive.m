@@ -117,7 +117,7 @@ NSString * const APIKeyKey = @"appKey";
     }
 
 	NSString *name = nil;
-	
+
 	if (self.nameComponents) {
 		name = [self.nameFormatter stringFromPersonNameComponents:self.nameComponents];
 	} else {
@@ -152,7 +152,7 @@ NSString * const APIKeyKey = @"appKey";
         returnCode = MPKitReturnCodeSuccess;
     } else if (identityType == MPUserIdentityCustomerId) {
         if ([Apptentive sharedConnection].personName.length == 0) {
-            [Apptentive sharedConnection].personName == identityString;
+            [Apptentive sharedConnection].personName = identityString;
         }
         returnCode = MPKitReturnCodeSuccess;
     } else {
