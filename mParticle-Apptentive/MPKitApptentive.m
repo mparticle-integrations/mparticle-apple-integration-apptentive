@@ -18,7 +18,7 @@
 
 #import "MPKitApptentive.h"
 #import "mParticle.h"
-#import <Apptentive.h>
+#import "Apptentive.h"
 
 NSString * const APIKeyKey = @"appKey";
 
