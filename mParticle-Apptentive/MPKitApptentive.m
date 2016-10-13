@@ -70,7 +70,7 @@ NSString * const APIKeyKey = @"appKey";
     dispatch_once(&kitPredicate, ^{
         NSString *APIKey = self.configuration[APIKeyKey];
 
-        [Apptentive sharedConnection].APIKey = APIKey;
+        [[Apptentive sharedConnection] setAPIKey:APIKey distributionName:@"mParticle" distributionVersion:[MParticle sharedInstance].version];
 
         _started = YES;
 
