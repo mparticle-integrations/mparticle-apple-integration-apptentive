@@ -19,13 +19,14 @@
 #import "MPKitApptentive.h"
 #import "mParticle.h"
 
-#if defined(__has_include) && __has_include(<apptentive-ios/Apptentive.h>)
-    #import <apptentive-ios/Apptentive.h>
+#if defined(__has_include) && __has_include(<Apptentive/Apptentive.h>)
+    #import <Apptentive/Apptentive.h>
 #else
     #import "Apptentive.h"
 #endif
 
-NSString * const APIKeyKey = @"appKey";
+NSString * const AppKeyKey = @"apptentiveAppKey";
+NSString * const AppSignatureKey = @"apptentiveAppSignature";
 
 @interface MPKitApptentive ()
 
@@ -56,7 +57,7 @@ NSString * const APIKeyKey = @"appKey";
 - (nonnull instancetype)initWithConfiguration:(nonnull NSDictionary *)configuration startImmediately:(BOOL)startImmediately {
     self = [super init];
     NSString *appKey = configuration[APIKeyKey];
-    if (!self || !appKey) {
+    if (!self || !appKey || !appSignature) {
         return nil;
     }
 
@@ -73,9 +74,14 @@ NSString * const APIKeyKey = @"appKey";
     static dispatch_once_t kitPredicate;
 
     dispatch_once(&kitPredicate, ^{
-        NSString *APIKey = self.configuration[APIKeyKey];
+        NSString *apptentiveKey = self.configuration[AppKeyKey];
+        NSString *apptentiveSignature = self.configuration[AppSignatureKey];
 
-        [[Apptentive sharedConnection] setAPIKey:APIKey distributionName:@"mParticle" distributionVersion:[MParticle sharedInstance].version];
+        ApptentiveConfiguration *configuration = [[ApptentiveConfiguration alloc] initWithApptentiveKey:[apptentiveKey apptentiveSignature:apptentiveSignature];
+        configuration.distributionName = @"mParticle";
+        configuration.distributionVersion = [MParticle sharedInstance].version;
+
+        [Apptentive registerWithConfiguration:configuration];
 
         _started = YES;
 
