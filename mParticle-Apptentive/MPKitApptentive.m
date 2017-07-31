@@ -56,9 +56,23 @@ NSString * const AppSignatureKey = @"apptentiveAppSignature";
 #pragma mark Kit instance and lifecycle
 - (nonnull instancetype)initWithConfiguration:(nonnull NSDictionary *)configuration startImmediately:(BOOL)startImmediately {
     self = [super init];
-    NSString *appKey = configuration[APIKeyKey];
-    if (!self || !appKey || !appSignature) {
+
+    if (self == nil) {
         return nil;
+    }
+
+    NSString *appKey = configuration[AppKeyKey];
+    NSString *appSignature = configuration[AppSignatureKey];
+    if (appKey == nil || appSignature == nil) {
+        if (appKey == nil) {
+            NSLog(@"No Apptentive App Key provided.");
+        }
+
+        if (appSignature == nil) {
+            NSLog(@"No Apptentive App Signature provided.");
+        }
+
+        NSLog(@"Please see the Apptentive mParticle integration guide: https://learn.apptentive.com/knowledge-base/mparticle-integration-ios/");
     }
 
     _configuration = configuration;
@@ -77,7 +91,7 @@ NSString * const AppSignatureKey = @"apptentiveAppSignature";
         NSString *apptentiveKey = self.configuration[AppKeyKey];
         NSString *apptentiveSignature = self.configuration[AppSignatureKey];
 
-        ApptentiveConfiguration *configuration = [[ApptentiveConfiguration alloc] initWithApptentiveKey:[apptentiveKey apptentiveSignature:apptentiveSignature];
+        ApptentiveConfiguration *configuration = [ApptentiveConfiguration configurationWithApptentiveKey:apptentiveKey apptentiveSignature:apptentiveSignature];
         configuration.distributionName = @"mParticle";
         configuration.distributionVersion = [MParticle sharedInstance].version;
 
@@ -124,26 +138,26 @@ NSString * const AppSignatureKey = @"apptentiveAppSignature";
             self.lastName = value;
         }
     } else {
-        [[Apptentive sharedConnection] addCustomPersonData:value withKey:key];
+        [[Apptentive sharedConnection] addCustomPersonDataString:value withKey:key];
     }
 
-	NSString *name = nil;
+    NSString *name = nil;
 
-	if (self.nameComponents) {
-		name = [self.nameFormatter stringFromPersonNameComponents:self.nameComponents];
-	} else {
-		if (self.firstName.length && self.lastName.length) {
-			name = [@[ self.firstName, self.lastName ] componentsJoinedByString:@" "];
-		} else if (self.firstName.length) {
-			name = self.firstName;
-		} else if (self.lastName.length) {
-			name = self.lastName;
-		}
-	}
+    if (self.nameComponents) {
+        name = [self.nameFormatter stringFromPersonNameComponents:self.nameComponents];
+    } else {
+        if (self.firstName.length && self.lastName.length) {
+            name = [@[ self.firstName, self.lastName ] componentsJoinedByString:@" "];
+        } else if (self.firstName.length) {
+            name = self.firstName;
+        } else if (self.lastName.length) {
+            name = self.lastName;
+        }
+    }
 
-	if (name) {
-		[Apptentive sharedConnection].personName = name;
-	}
+    if (name) {
+        [Apptentive sharedConnection].personName = name;
+    }
 
     MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeSuccess];
     return execStatus;
