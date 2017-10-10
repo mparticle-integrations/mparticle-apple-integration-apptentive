@@ -48,15 +48,16 @@ NSString * const apptentiveAppSignatureKey = @"apptentiveAppSignature";
 }
 
 + (void)load {
-    MPKitRegister *kitRegister = [[MPKitRegister alloc] initWithName:@"Apptentive" className:@"MPKitApptentive" startImmediately:YES];
+    MPKitRegister *kitRegister = [[MPKitRegister alloc] initWithName:@"Apptentive" className:@"MPKitApptentive"];
     [MParticle registerExtension:kitRegister];
 }
 
 #pragma mark - MPKitInstanceProtocol methods
 
 #pragma mark Kit instance and lifecycle
-- (nonnull instancetype)initWithConfiguration:(nonnull NSDictionary *)configuration startImmediately:(BOOL)startImmediately {
-    self = [super init];
+- (MPKitExecStatus *)didFinishLaunchingWithConfiguration:(NSDictionary *)configuration {
+    MPKitExecStatus *execStatus = nil;
+
     NSString *appKey = configuration[apptentiveAppKeyKey];
     NSString *appSignature = configuration[apptentiveAppSignatureKey];
 
@@ -72,17 +73,17 @@ NSString * const apptentiveAppSignatureKey = @"apptentiveAppSignature";
         NSLog(@"Please see the Apptentive mParticle integration guide: https://learn.apptentive.com/knowledge-base/mparticle-integration-ios/");
     }
     
-    if (!self || !appKey || !appSignature) {
-        return nil;
+    if (!appKey || !appSignature) {
+        execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeRequirementsNotMet];
+        return execStatus;
     }
 
     _configuration = configuration;
 
-    if (startImmediately) {
-        [self start];
-    }
+    [self start];
 
-    return self;
+    execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeSuccess];
+    return execStatus;
 }
 
 - (void)start {
