@@ -18,12 +18,10 @@
 
 #import "MPKitApptentive.h"
 
-#if defined(__has_include) && __has_include(<apptentive-ios/Apptentive.h>)
-    #import <apptentive-ios/Apptentive.h>
-#elif defined(__has_include) && __has_include(<Apptentive/Apptentive.h>)
-    #import <Apptentive/Apptentive.h>
+#if defined(__has_include) && __has_include(<Apptentive/Apptentive.h>)
+#import <Apptentive/Apptentive.h>
 #else
-    #import "Apptentive.h"
+#import "Apptentive.h"
 #endif
 
 NSString * const apptentiveAppKeyKey = @"apptentiveAppKey";
@@ -140,26 +138,26 @@ NSString * const apptentiveAppSignatureKey = @"apptentiveAppSignature";
             self.lastName = value;
         }
     } else {
-        [[Apptentive sharedConnection] addCustomDeviceDataString:value withKey:key];
+        [[Apptentive sharedConnection] addCustomPersonDataString:value withKey:key];
     }
 
-	NSString *name = nil;
+    NSString *name = nil;
 
-	if (self.nameComponents) {
-		name = [self.nameFormatter stringFromPersonNameComponents:self.nameComponents];
-	} else {
-		if (self.firstName.length && self.lastName.length) {
-			name = [@[ self.firstName, self.lastName ] componentsJoinedByString:@" "];
-		} else if (self.firstName.length) {
-			name = self.firstName;
-		} else if (self.lastName.length) {
-			name = self.lastName;
-		}
-	}
+    if (self.nameComponents) {
+        name = [self.nameFormatter stringFromPersonNameComponents:self.nameComponents];
+    } else {
+        if (self.firstName.length && self.lastName.length) {
+            name = [@[ self.firstName, self.lastName ] componentsJoinedByString:@" "];
+        } else if (self.firstName.length) {
+            name = self.firstName;
+        } else if (self.lastName.length) {
+            name = self.lastName;
+        }
+    }
 
-	if (name) {
-		[Apptentive sharedConnection].personName = name;
-	}
+    if (name) {
+        [Apptentive sharedConnection].personName = name;
+    }
 
     MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeSuccess];
     return execStatus;
