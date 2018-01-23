@@ -17,7 +17,6 @@
 //
 
 #import "MPKitApptentive.h"
-#import "mParticle.h"
 
 #if defined(__has_include) && __has_include(<Apptentive/Apptentive.h>)
 #import <Apptentive/Apptentive.h>
@@ -25,8 +24,8 @@
 #import "Apptentive.h"
 #endif
 
-NSString * const AppKeyKey = @"apptentiveAppKey";
-NSString * const AppSignatureKey = @"apptentiveAppSignature";
+NSString * const apptentiveAppKeyKey = @"apptentiveAppKey";
+NSString * const apptentiveAppSignatureKey = @"apptentiveAppSignature";
 
 @interface MPKitApptentive ()
 
@@ -56,8 +55,22 @@ NSString * const AppSignatureKey = @"apptentiveAppSignature";
 #pragma mark Kit instance and lifecycle
 - (nonnull instancetype)initWithConfiguration:(nonnull NSDictionary *)configuration startImmediately:(BOOL)startImmediately {
     self = [super init];
+    NSString *appKey = configuration[apptentiveAppKeyKey];
+    NSString *appSignature = configuration[apptentiveAppSignatureKey];
 
-    if (self == nil) {
+    if (appKey == nil || appSignature == nil) {
+        if (appKey == nil) {
+            NSLog(@"No Apptentive App Key provided.");
+        }
+
+        if (appSignature == nil) {
+            NSLog(@"No Apptentive App Signature provided.");
+        }
+
+        NSLog(@"Please see the Apptentive mParticle integration guide: https://learn.apptentive.com/knowledge-base/mparticle-integration-ios/");
+    }
+    
+    if (!self || !appKey || !appSignature) {
         return nil;
     }
 
@@ -88,14 +101,15 @@ NSString * const AppSignatureKey = @"apptentiveAppSignature";
     static dispatch_once_t kitPredicate;
 
     dispatch_once(&kitPredicate, ^{
-        NSString *apptentiveKey = self.configuration[AppKeyKey];
-        NSString *apptentiveSignature = self.configuration[AppSignatureKey];
-
-        ApptentiveConfiguration *configuration = [ApptentiveConfiguration configurationWithApptentiveKey:apptentiveKey apptentiveSignature:apptentiveSignature];
-        configuration.distributionName = @"mParticle";
-        configuration.distributionVersion = [MParticle sharedInstance].version;
-
-        [Apptentive registerWithConfiguration:configuration];
+        NSString *appKey = self.configuration[apptentiveAppKeyKey];
+        NSString *appSignature = self.configuration[apptentiveAppSignatureKey];
+        
+        ApptentiveConfiguration *apptentiveConfig = [ApptentiveConfiguration configurationWithApptentiveKey:appKey apptentiveSignature:appSignature];
+        
+        apptentiveConfig.distributionName = @"mParticle";
+        apptentiveConfig.distributionVersion = [MParticle sharedInstance].version;
+        
+        [Apptentive registerWithConfiguration:apptentiveConfig];
 
         _started = YES;
 
