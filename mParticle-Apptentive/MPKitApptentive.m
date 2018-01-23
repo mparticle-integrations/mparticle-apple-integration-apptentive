@@ -74,20 +74,6 @@ NSString * const apptentiveAppSignatureKey = @"apptentiveAppSignature";
         return nil;
     }
 
-    NSString *appKey = configuration[AppKeyKey];
-    NSString *appSignature = configuration[AppSignatureKey];
-    if (appKey == nil || appSignature == nil) {
-        if (appKey == nil) {
-            NSLog(@"No Apptentive App Key provided.");
-        }
-
-        if (appSignature == nil) {
-            NSLog(@"No Apptentive App Signature provided.");
-        }
-
-        NSLog(@"Please see the Apptentive mParticle integration guide: https://learn.apptentive.com/knowledge-base/mparticle-integration-ios/");
-    }
-
     _configuration = configuration;
 
     if (startImmediately) {
@@ -253,10 +239,11 @@ NSString * const apptentiveAppSignatureKey = @"apptentiveAppSignature";
 
 #pragma mark Events
 
-- (MPKitExecStatus *)logEvent:(MPEvent *)event {
-    BOOL success = [[Apptentive sharedConnection] engage:event.name fromViewController:nil];
+- (nonnull MPKitExecStatus *)logEvent:(nonnull MPEvent *)event {
+	[[Apptentive sharedConnection] engage:event.name fromViewController:nil];
 
-    MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:success ? MPKitReturnCodeSuccess : MPKitReturnCodeRequirementsNotMet];
+	MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeSuccess];
+
     return execStatus;
 }
 
