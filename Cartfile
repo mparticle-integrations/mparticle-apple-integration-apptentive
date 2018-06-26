@@ -1,2 +1,2 @@
 github "apptentive/apptentive-ios" ~> 4.0.4
-github "mparticle/mparticle-apple-sdk" ~> 7.3.0
+github "mparticle/mparticle-apple-sdk" ~> 7.4.0
