@@ -54,63 +54,68 @@ NSString * const ApptentiveConversationStateDidChangeNotification = @"Apptentive
 #pragma mark - MPKitInstanceProtocol methods
 
 #pragma mark Kit instance and lifecycle
+- (MPKitExecStatus *)didFinishLaunchingWithConfiguration:(NSDictionary *)configuration {
+    MPKitExecStatus *execStatus = nil;
 
-- (nonnull MPKitExecStatus *)didFinishLaunchingWithConfiguration:(nonnull NSDictionary *)configuration {
-	MPKitExecStatus *execStatus = nil;
+    NSString *appKey = configuration[apptentiveAppKeyKey];
+    NSString *appSignature = configuration[apptentiveAppSignatureKey];
 
-	NSString *appKey = configuration[apptentiveAppKeyKey];
-	NSString *appSignature = configuration[apptentiveAppSignatureKey];
+    if (appKey == nil || appSignature == nil) {
+        if (appKey == nil) {
+            NSLog(@"No Apptentive App Key provided.");
+        }
 
-	if (appKey == nil || appSignature == nil) {
-		if (appKey == nil) {
-			NSLog(@"No Apptentive App Key provided.");
-		}
+        if (appSignature == nil) {
+            NSLog(@"No Apptentive App Signature provided.");
+        }
 
-		if (appSignature == nil) {
-			NSLog(@"No Apptentive App Signature provided.");
-		}
+        NSLog(@"Please see the Apptentive mParticle integration guide: https://learn.apptentive.com/knowledge-base/mparticle-integration-ios/");
+    }
+    
+    if (!appKey || !appSignature) {
+        execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeRequirementsNotMet];
+        return execStatus;
+    }
 
-		NSLog(@"Please see the Apptentive mParticle integration guide: https://learn.apptentive.com/knowledge-base/mparticle-integration-ios/");
-	}
+    [self start];
+    
+    execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeSuccess];
+    return execStatus
+}
 
-	if (!self || !appKey || !appSignature) {
-		execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeRequirementsNotMet];
-		return execStatus;
-	}
+- (void)start {
+    static dispatch_once_t kitPredicate;
 
-	_configuration = configuration;
+    dispatch_once(&kitPredicate, ^{
+        NSString *appKey = self.configuration[apptentiveAppKeyKey];
+        NSString *appSignature = self.configuration[apptentiveAppSignatureKey];
 
-	ApptentiveConfiguration *apptentiveConfig = [ApptentiveConfiguration configurationWithApptentiveKey:appKey apptentiveSignature:appSignature];
+        ApptentiveConfiguration *apptentiveConfig = [ApptentiveConfiguration configurationWithApptentiveKey:appKey apptentiveSignature:appSignature];
 
-	apptentiveConfig.distributionName = @"mParticle";
-	apptentiveConfig.distributionVersion = [MParticle sharedInstance].version;
+        apptentiveConfig.distributionName = @"mParticle";
+        apptentiveConfig.distributionVersion = [MParticle sharedInstance].version;
 
-	[Apptentive registerWithConfiguration:apptentiveConfig];
+        [Apptentive registerWithConfiguration:apptentiveConfig];
 
-	[NSNotificationCenter.defaultCenter addObserver:self selector:@selector(conversationStateChangedNotification:) name:ApptentiveConversationStateDidChangeNotification object:nil];
+        _started = YES;
 
-	if ([NSPersonNameComponents class]) {
-		_nameFormatter = [[NSPersonNameComponentsFormatter alloc] init];
-		_nameComponents = [[NSPersonNameComponents alloc] init];
-	}
+        if ([NSPersonNameComponents class]) {
+            _nameFormatter = [[NSPersonNameComponentsFormatter alloc] init];
+            _nameComponents = [[NSPersonNameComponents alloc] init];
+        }
 
-	_started = YES;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSDictionary *userInfo = @{mParticleKitInstanceKey:[[self class] kitCode]};
 
-	dispatch_async(dispatch_get_main_queue(), ^{
-		NSDictionary *userInfo = @{ mParticleKitInstanceKey: [[self class] kitCode] };
-
-		[[NSNotificationCenter defaultCenter] postNotificationName:mParticleKitDidBecomeActiveNotification
-															object:nil
-														  userInfo:userInfo];
-	});
-
-	execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeSuccess];
-
-	return execStatus;
+            [[NSNotificationCenter defaultCenter] postNotificationName:mParticleKitDidBecomeActiveNotification
+                                                                object:nil
+                                                              userInfo:userInfo];
+        });
+    });
 }
 
 - (id const)providerKitInstance {
-	return [self started] ? Apptentive.shared : nil;
+    return [self started] ? Apptentive.shared : nil;
 }
 
 #pragma mark User attributes and identities
@@ -240,9 +245,9 @@ NSString * const ApptentiveConversationStateDidChangeNotification = @"Apptentive
 #pragma mark Conversation state
 
 - (void)conversationStateChangedNotification:(NSNotification *)notification {
-	MParticleUser *currentUser = [[[MParticle sharedInstance] identity] currentUser];
+    MParticleUser *currentUser = [[[MParticle sharedInstance] identity] currentUser];
 
-	[Apptentive.shared setMParticleId:currentUser.userId.stringValue];
+    [Apptentive.shared setMParticleId:currentUser.userId.stringValue];
 }
 
 @end
