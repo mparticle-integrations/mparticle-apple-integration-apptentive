@@ -247,7 +247,7 @@ NSString * const apptentiveAppSignatureKey = @"apptentiveAppSignature";
     } else {
         [[Apptentive sharedConnection] engage:event.name fromViewController:nil];
     }
-    MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
+    MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeSuccess];
     return execStatus;
 }
 
