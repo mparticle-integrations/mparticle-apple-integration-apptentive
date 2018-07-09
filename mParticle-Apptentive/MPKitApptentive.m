@@ -236,8 +236,12 @@ NSString * const ApptentiveConversationStateDidChangeNotification = @"Apptentive
 #pragma mark Events
 
 - (MPKitExecStatus *)logEvent:(MPEvent *)event {
-    [[Apptentive sharedConnection] engage:event.name fromViewController:nil];
-
+    NSDictionary *eventValues = event.info;
+    if ([eventValues count] > 0) {
+        [[Apptentive sharedConnection] engage:event.name withCustomData:eventValues fromViewController:nil];
+    } else {
+        [[Apptentive sharedConnection] engage:event.name fromViewController:nil];
+    }
     MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeSuccess];
     return execStatus;
 }
