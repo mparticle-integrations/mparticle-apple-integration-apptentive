@@ -245,9 +245,9 @@ NSString * const ApptentiveConversationStateDidChangeNotification = @"Apptentive
 #pragma mark Conversation state
 
 - (void)conversationStateChangedNotification:(NSNotification *)notification {
-    MParticleUser *currentUser = [[[MParticle sharedInstance] identity] currentUser];
+    NSNumber *currentUserId = MParticle.sharedInstance.identity.currentUser.userId;
 
-    [Apptentive.shared setMParticleId:currentUser.userId.stringValue];
+    [Apptentive.shared setMParticleId:[currentUserId isEqualToNumber:@0] ? nil : currentUserId.stringValue];
 }
 
 @end
