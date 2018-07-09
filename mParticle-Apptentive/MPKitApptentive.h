@@ -23,6 +23,8 @@
 #import "mParticle.h"
 #endif
 
+#import <Apptentive/Apptentive.h>
+
 @interface MPKitApptentive : NSObject <MPKitProtocol>
 
 @property (nonatomic, strong, nonnull) NSDictionary *configuration;
@@ -32,3 +34,10 @@
 @property (nonatomic, strong, nullable) NSArray<NSDictionary<NSString *, id> *> *userIdentities;
 
 @end
+
+@interface Apptentive ()
+
+- (void)setMParticleId:(NSString *)mParticleId;
+
+@end
+

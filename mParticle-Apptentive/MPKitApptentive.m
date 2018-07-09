@@ -26,6 +26,7 @@
 
 NSString * const apptentiveAppKeyKey = @"apptentiveAppKey";
 NSString * const apptentiveAppSignatureKey = @"apptentiveAppSignature";
+NSString * const ApptentiveConversationStateDidChangeNotification = @"ApptentiveConversationStateDidChangeNotification";
 
 @interface MPKitApptentive ()
 
@@ -76,8 +77,6 @@ NSString * const apptentiveAppSignatureKey = @"apptentiveAppSignature";
         return execStatus;
     }
 
-    _configuration = configuration;
-
     [self start];
 
     execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeSuccess];
@@ -90,12 +89,12 @@ NSString * const apptentiveAppSignatureKey = @"apptentiveAppSignature";
     dispatch_once(&kitPredicate, ^{
         NSString *appKey = self.configuration[apptentiveAppKeyKey];
         NSString *appSignature = self.configuration[apptentiveAppSignatureKey];
-        
+
         ApptentiveConfiguration *apptentiveConfig = [ApptentiveConfiguration configurationWithApptentiveKey:appKey apptentiveSignature:appSignature];
-        
+
         apptentiveConfig.distributionName = @"mParticle";
         apptentiveConfig.distributionVersion = [MParticle sharedInstance].version;
-        
+
         [Apptentive registerWithConfiguration:apptentiveConfig];
 
         _started = YES;
@@ -116,11 +115,7 @@ NSString * const apptentiveAppSignatureKey = @"apptentiveAppSignature";
 }
 
 - (id const)providerKitInstance {
-    if (![self started]) {
-        return nil;
-    } else {
-        return [Apptentive sharedConnection];
-    }
+    return [self started] ? Apptentive.shared : nil;
 }
 
 #pragma mark User attributes and identities
@@ -185,7 +180,7 @@ NSString * const apptentiveAppSignatureKey = @"apptentiveAppSignature";
         returnCode = MPKitReturnCodeRequirementsNotMet;
     }
 
-    MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeSuccess];
+    MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:returnCode];
     return execStatus;
 }
 
@@ -249,6 +244,14 @@ NSString * const apptentiveAppSignatureKey = @"apptentiveAppSignature";
     }
     MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeSuccess];
     return execStatus;
+}
+
+#pragma mark Conversation state
+
+- (void)conversationStateChangedNotification:(NSNotification *)notification {
+    NSNumber *currentUserId = MParticle.sharedInstance.identity.currentUser.userId;
+
+    [Apptentive.shared setMParticleId:[currentUserId isEqualToNumber:@0] ? nil : currentUserId.stringValue];
 }
 
 @end
