@@ -78,9 +78,9 @@ NSString * const ApptentiveConversationStateDidChangeNotification = @"Apptentive
     }
 
     [self start];
-    
+
     execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeSuccess];
-    return execStatus
+    return execStatus;
 }
 
 - (void)start {
