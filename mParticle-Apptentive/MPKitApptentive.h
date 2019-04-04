@@ -23,7 +23,13 @@
 #import "mParticle.h"
 #endif
 
+#if defined(__has_include) && __has_include(<Apptentive/Apptentive.h>)
 #import <Apptentive/Apptentive.h>
+#else
+#import "Apptentive.h"
+#endif
+
+
 
 @interface MPKitApptentive : NSObject <MPKitProtocol>
 
