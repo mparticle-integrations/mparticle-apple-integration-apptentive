@@ -17,10 +17,16 @@
 //
 
 #import "MPKitApptentive.h"
-#import "mParticle.h"
-#import <Apptentive.h>
 
-NSString * const APIKeyKey = @"appKey";
+#if defined(__has_include) && __has_include(<Apptentive/Apptentive.h>)
+#import <Apptentive/Apptentive.h>
+#else
+#import "Apptentive.h"
+#endif
+
+NSString * const apptentiveAppKeyKey = @"apptentiveAppKey";
+NSString * const apptentiveAppSignatureKey = @"apptentiveAppSignature";
+NSString * const ApptentiveConversationStateDidChangeNotification = @"ApptentiveConversationStateDidChangeNotification";
 
 @interface MPKitApptentive ()
 
@@ -41,36 +47,55 @@ NSString * const APIKeyKey = @"appKey";
 }
 
 + (void)load {
-    MPKitRegister *kitRegister = [[MPKitRegister alloc] initWithName:@"Apptentive" className:@"MPKitApptentive" startImmediately:YES];
+    MPKitRegister *kitRegister = [[MPKitRegister alloc] initWithName:@"Apptentive" className:@"MPKitApptentive"];
     [MParticle registerExtension:kitRegister];
 }
 
 #pragma mark - MPKitInstanceProtocol methods
 
 #pragma mark Kit instance and lifecycle
-- (nonnull instancetype)initWithConfiguration:(nonnull NSDictionary *)configuration startImmediately:(BOOL)startImmediately {
-    self = [super init];
-    NSString *appKey = configuration[APIKeyKey];
-    if (!self || !appKey) {
-        return nil;
+- (MPKitExecStatus *)didFinishLaunchingWithConfiguration:(NSDictionary *)configuration {
+    MPKitExecStatus *execStatus = nil;
+
+    NSString *appKey = configuration[apptentiveAppKeyKey];
+    NSString *appSignature = configuration[apptentiveAppSignatureKey];
+
+    if (appKey == nil || appSignature == nil) {
+        if (appKey == nil) {
+            NSLog(@"No Apptentive App Key provided.");
+        }
+
+        if (appSignature == nil) {
+            NSLog(@"No Apptentive App Signature provided.");
+        }
+
+        NSLog(@"Please see the Apptentive mParticle integration guide: https://learn.apptentive.com/knowledge-base/mparticle-integration-ios/");
+    }
+    
+    if (!appKey || !appSignature) {
+        execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeRequirementsNotMet];
+        return execStatus;
     }
 
-    _configuration = configuration;
+    [self start];
 
-    if (startImmediately) {
-        [self start];
-    }
-
-    return self;
+    execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeSuccess];
+    return execStatus;
 }
 
 - (void)start {
     static dispatch_once_t kitPredicate;
 
     dispatch_once(&kitPredicate, ^{
-        NSString *APIKey = self.configuration[APIKeyKey];
+        NSString *appKey = self.configuration[apptentiveAppKeyKey];
+        NSString *appSignature = self.configuration[apptentiveAppSignatureKey];
 
-        [Apptentive sharedConnection].APIKey = APIKey;
+        ApptentiveConfiguration *apptentiveConfig = [ApptentiveConfiguration configurationWithApptentiveKey:appKey apptentiveSignature:appSignature];
+
+        apptentiveConfig.distributionName = @"mParticle";
+        apptentiveConfig.distributionVersion = [MParticle sharedInstance].version;
+
+        [Apptentive registerWithConfiguration:apptentiveConfig];
 
         _started = YES;
 
@@ -90,11 +115,7 @@ NSString * const APIKeyKey = @"appKey";
 }
 
 - (id const)providerKitInstance {
-    if (![self started]) {
-        return nil;
-    } else {
-        return [Apptentive sharedConnection];
-    }
+    return [self started] ? Apptentive.shared : nil;
 }
 
 #pragma mark User attributes and identities
@@ -113,26 +134,26 @@ NSString * const APIKeyKey = @"appKey";
             self.lastName = value;
         }
     } else {
-        [[Apptentive sharedConnection] addCustomPersonData:value withKey:key];
+        [[Apptentive sharedConnection] addCustomPersonDataString:value withKey:key];
     }
 
-	NSString *name = nil;
+    NSString *name = nil;
 
-	if (self.nameComponents) {
-		name = [self.nameFormatter stringFromPersonNameComponents:self.nameComponents];
-	} else {
-		if (self.firstName.length && self.lastName.length) {
-			name = [@[ self.firstName, self.lastName ] componentsJoinedByString:@" "];
-		} else if (self.firstName.length) {
-			name = self.firstName;
-		} else if (self.lastName.length) {
-			name = self.lastName;
-		}
-	}
+    if (self.nameComponents) {
+        name = [self.nameFormatter stringFromPersonNameComponents:self.nameComponents];
+    } else {
+        if (self.firstName.length && self.lastName.length) {
+            name = [@[ self.firstName, self.lastName ] componentsJoinedByString:@" "];
+        } else if (self.firstName.length) {
+            name = self.firstName;
+        } else if (self.lastName.length) {
+            name = self.lastName;
+        }
+    }
 
-	if (name) {
-		[Apptentive sharedConnection].personName = name;
-	}
+    if (name) {
+        [Apptentive sharedConnection].personName = name;
+    }
 
     MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeSuccess];
     return execStatus;
@@ -159,7 +180,7 @@ NSString * const APIKeyKey = @"appKey";
         returnCode = MPKitReturnCodeRequirementsNotMet;
     }
 
-    MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeSuccess];
+    MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:returnCode];
     return execStatus;
 }
 
@@ -215,10 +236,22 @@ NSString * const APIKeyKey = @"appKey";
 #pragma mark Events
 
 - (MPKitExecStatus *)logEvent:(MPEvent *)event {
-    BOOL success = [[Apptentive sharedConnection] engage:event.name fromViewController:nil];
-
-    MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:success ? MPKitReturnCodeSuccess : MPKitReturnCodeRequirementsNotMet];
+    NSDictionary *eventValues = event.info;
+    if ([eventValues count] > 0) {
+        [[Apptentive sharedConnection] engage:event.name withCustomData:eventValues fromViewController:nil];
+    } else {
+        [[Apptentive sharedConnection] engage:event.name fromViewController:nil];
+    }
+    MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeSuccess];
     return execStatus;
+}
+
+#pragma mark Conversation state
+
+- (void)conversationStateChangedNotification:(NSNotification *)notification {
+    NSNumber *currentUserId = MParticle.sharedInstance.identity.currentUser.userId;
+
+    [Apptentive.shared setMParticleId:[currentUserId isEqualToNumber:@0] ? nil : currentUserId.stringValue];
 }
 
 @end
