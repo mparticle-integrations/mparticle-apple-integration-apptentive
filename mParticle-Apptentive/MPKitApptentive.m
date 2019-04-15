@@ -51,12 +51,14 @@ NSString * const ApptentiveConversationStateDidChangeNotification = @"Apptentive
     [MParticle registerExtension:kitRegister];
 }
 
+- (MPKitExecStatus *)execStatus:(MPKitReturnCode)returnCode {
+    return [[MPKitExecStatus alloc] initWithSDKCode:self.class.kitCode returnCode:returnCode];
+}
+
 #pragma mark - MPKitInstanceProtocol methods
 
 #pragma mark Kit instance and lifecycle
 - (MPKitExecStatus *)didFinishLaunchingWithConfiguration:(NSDictionary *)configuration {
-    MPKitExecStatus *execStatus = nil;
-
     NSString *appKey = configuration[apptentiveAppKeyKey];
     NSString *appSignature = configuration[apptentiveAppSignatureKey];
 
@@ -71,16 +73,16 @@ NSString * const ApptentiveConversationStateDidChangeNotification = @"Apptentive
 
         NSLog(@"Please see the Apptentive mParticle integration guide: https://learn.apptentive.com/knowledge-base/mparticle-integration-ios/");
     }
-    
+
     if (!appKey || !appSignature) {
-        execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeRequirementsNotMet];
-        return execStatus;
+        return [self execStatus:MPKitReturnCodeRequirementsNotMet];
     }
+
+    _configuration = configuration;
 
     [self start];
 
-    execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeSuccess];
-    return execStatus;
+    return [self execStatus:MPKitReturnCodeSuccess];
 }
 
 - (void)start {
@@ -97,11 +99,11 @@ NSString * const ApptentiveConversationStateDidChangeNotification = @"Apptentive
 
         [Apptentive registerWithConfiguration:apptentiveConfig];
 
-        _started = YES;
+        self->_started = YES;
 
         if ([NSPersonNameComponents class]) {
-            _nameFormatter = [[NSPersonNameComponentsFormatter alloc] init];
-            _nameComponents = [[NSPersonNameComponents alloc] init];
+            self->_nameFormatter = [[NSPersonNameComponentsFormatter alloc] init];
+            self->_nameComponents = [[NSPersonNameComponents alloc] init];
         }
 
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -155,14 +157,12 @@ NSString * const ApptentiveConversationStateDidChangeNotification = @"Apptentive
         [Apptentive sharedConnection].personName = name;
     }
 
-    MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeSuccess];
-    return execStatus;
+    return [self execStatus:MPKitReturnCodeSuccess];
 }
 
 - (MPKitExecStatus *)removeUserAttribute:(NSString *)key {
     [[Apptentive sharedConnection] removeCustomPersonDataWithKey:key];
-    MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeSuccess];
-    return execStatus;
+    return [self execStatus:MPKitReturnCodeSuccess];
 }
 
 - (MPKitExecStatus *)setUserIdentity:(NSString *)identityString identityType:(MPUserIdentity)identityType {
@@ -180,8 +180,7 @@ NSString * const ApptentiveConversationStateDidChangeNotification = @"Apptentive
         returnCode = MPKitReturnCodeRequirementsNotMet;
     }
 
-    MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:returnCode];
-    return execStatus;
+    return [self execStatus:returnCode];
 }
 
 #pragma mark e-Commerce
@@ -242,8 +241,7 @@ NSString * const ApptentiveConversationStateDidChangeNotification = @"Apptentive
     } else {
         [[Apptentive sharedConnection] engage:event.name fromViewController:nil];
     }
-    MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeSuccess];
-    return execStatus;
+    return [self execStatus:MPKitReturnCodeSuccess];
 }
 
 #pragma mark Conversation state

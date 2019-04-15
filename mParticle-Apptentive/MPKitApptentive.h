@@ -37,7 +37,7 @@
 
 @interface Apptentive ()
 
-- (void)setMParticleId:(NSString *)mParticleId;
+- (void)setMParticleId:(NSString *_Nonnull)mParticleId;
 
 @end
 
