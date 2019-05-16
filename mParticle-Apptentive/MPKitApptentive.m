@@ -24,9 +24,15 @@
 #import "Apptentive.h"
 #endif
 
-NSString * const apptentiveAppKeyKey = @"apptentiveAppKey";
-NSString * const apptentiveAppSignatureKey = @"apptentiveAppSignature";
+static NSString * const apptentiveAppKeyKey = @"apptentiveAppKey";
+static NSString * const apptentiveAppSignatureKey = @"apptentiveAppSignature";
+static NSString * const apptentiveInitOnStart = @"apptentiveInitOnStart";
+
 NSString * const ApptentiveConversationStateDidChangeNotification = @"ApptentiveConversationStateDidChangeNotification";
+
+// we need to keep the credentials in order to init the SDK later on
+static NSString * _apptentiveKey = nil;
+static NSString * _apptentiveSignature = nil;
 
 @interface MPKitApptentive ()
 
@@ -89,15 +95,18 @@ NSString * const ApptentiveConversationStateDidChangeNotification = @"Apptentive
     static dispatch_once_t kitPredicate;
 
     dispatch_once(&kitPredicate, ^{
-        NSString *appKey = self.configuration[apptentiveAppKeyKey];
-        NSString *appSignature = self.configuration[apptentiveAppSignatureKey];
-
-        ApptentiveConfiguration *apptentiveConfig = [ApptentiveConfiguration configurationWithApptentiveKey:appKey apptentiveSignature:appSignature];
-
-        apptentiveConfig.distributionName = @"mParticle";
-        apptentiveConfig.distributionVersion = [MParticle sharedInstance].version;
-
-        [Apptentive registerWithConfiguration:apptentiveConfig];
+		_apptentiveKey = self.configuration[apptentiveAppKeyKey];
+		_apptentiveSignature = self.configuration[apptentiveAppSignatureKey];
+		
+        // do we need to init the SDK while the Kit starts
+		BOOL initOnStart = self.configuration[apptentiveInitOnStart] == nil ||   // if flag is missing
+						  [self.configuration[apptentiveInitOnStart] boolValue]; // or set to 'YES'
+		
+		if (initOnStart) {
+			[[self class] registerSDK];
+		} else {
+			NSLog(@"Apptentive SDK was not initialized on startup");
+		}
 
         self->_started = YES;
 
@@ -118,6 +127,34 @@ NSString * const ApptentiveConversationStateDidChangeNotification = @"Apptentive
 
 - (id const)providerKitInstance {
     return [self started] ? Apptentive.shared : nil;
+}
+
++ (BOOL)registerSDK {
+	if (_apptentiveKey.length == 0) {
+		NSLog(@"Unable to initialize Apptentive SDK: apptentive key is nil or empty");
+		return NO;
+	}
+	
+	if (_apptentiveSignature.length == 0) {
+		NSLog(@"Unable to initialize Apptentive SDK: apptentive signature is nil or empty");
+		return NO;
+	}
+	
+	if (Apptentive.shared.apptentiveKey && Apptentive.shared.apptentiveSignature) {
+		NSLog(@"Apptentive SDK already initialized");
+		return NO;
+	}
+	
+	NSLog(@"Registering Apptentive SDK");
+	
+	ApptentiveConfiguration *apptentiveConfig = [ApptentiveConfiguration configurationWithApptentiveKey:_apptentiveKey apptentiveSignature:_apptentiveSignature];
+	
+	apptentiveConfig.distributionName = @"mParticle";
+	apptentiveConfig.distributionVersion = [MParticle sharedInstance].version;
+	
+	[Apptentive registerWithConfiguration:apptentiveConfig];
+	
+	return YES;
 }
 
 #pragma mark User attributes and identities

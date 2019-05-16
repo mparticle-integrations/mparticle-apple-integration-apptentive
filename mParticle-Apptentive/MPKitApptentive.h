@@ -33,6 +33,14 @@
 @property (nonatomic, strong, nullable) NSDictionary<NSString *, id> *userAttributes;
 @property (nonatomic, strong, nullable) NSArray<NSDictionary<NSString *, id> *> *userIdentities;
 
+
+/**
+ Begins Apptentive SDK initialization. Does nothing is the SDK is already initialized.
+
+ @return YES if SDK initialization was successful. NO - if SDK was already initialized or failed to initialize.
+ */
++ (BOOL)registerSDK;
+
 @end
 
 @interface Apptentive ()
