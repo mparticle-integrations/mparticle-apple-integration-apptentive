@@ -43,57 +43,57 @@ static NSString * _apptentiveSignature = nil;
 - (MPKitExecStatus *)didFinishLaunchingWithConfiguration:(NSDictionary *)configuration {
     NSString *appKey = configuration[apptentiveAppKeyKey];
     NSString *appSignature = configuration[apptentiveAppSignatureKey];
-
+    
     if (appKey == nil || appSignature == nil) {
         if (appKey == nil) {
             NSLog(@"No Apptentive App Key provided.");
         }
-
+        
         if (appSignature == nil) {
             NSLog(@"No Apptentive App Signature provided.");
         }
-
+        
         NSLog(@"Please see the Apptentive mParticle integration guide: https://learn.apptentive.com/knowledge-base/mparticle-integration-ios/");
     }
-
+    
     if (!appKey || !appSignature) {
         return [self execStatus:MPKitReturnCodeRequirementsNotMet];
     }
-
+    
     _configuration = configuration;
-
+    
     [self start];
-
+    
     return [self execStatus:MPKitReturnCodeSuccess];
 }
 
 - (void)start {
     static dispatch_once_t kitPredicate;
-
+    
     dispatch_once(&kitPredicate, ^{
-		_apptentiveKey = self.configuration[apptentiveAppKeyKey];
-		_apptentiveSignature = self.configuration[apptentiveAppSignatureKey];
-		
+        _apptentiveKey = self.configuration[apptentiveAppKeyKey];
+        _apptentiveSignature = self.configuration[apptentiveAppSignatureKey];
+        
         // do we need to init the SDK while the Kit starts
-		BOOL initOnStart = self.configuration[apptentiveInitOnStart] == nil ||   // if flag is missing
-						  [self.configuration[apptentiveInitOnStart] boolValue]; // or set to 'YES'
-		
-		if (initOnStart) {
-			[[self class] registerSDK];
-		} else {
-			NSLog(@"Apptentive SDK was not initialized on startup");
-		}
-
+        BOOL initOnStart = self.configuration[apptentiveInitOnStart] == nil ||   // if flag is missing
+        [self.configuration[apptentiveInitOnStart] boolValue]; // or set to 'YES'
+        
+        if (initOnStart) {
+            [[self class] registerSDK];
+        } else {
+            NSLog(@"Apptentive SDK was not initialized on startup");
+        }
+        
         self->_started = YES;
-
+        
         if ([NSPersonNameComponents class]) {
             self->_nameFormatter = [[NSPersonNameComponentsFormatter alloc] init];
             self->_nameComponents = [[NSPersonNameComponents alloc] init];
         }
-
+        
         dispatch_async(dispatch_get_main_queue(), ^{
             NSDictionary *userInfo = @{mParticleKitInstanceKey:[[self class] kitCode]};
-
+            
             [[NSNotificationCenter defaultCenter] postNotificationName:mParticleKitDidBecomeActiveNotification
                                                                 object:nil
                                                               userInfo:userInfo];
@@ -106,31 +106,31 @@ static NSString * _apptentiveSignature = nil;
 }
 
 + (BOOL)registerSDK {
-	if (_apptentiveKey.length == 0) {
-		NSLog(@"Unable to initialize Apptentive SDK: apptentive key is nil or empty");
-		return NO;
-	}
-	
-	if (_apptentiveSignature.length == 0) {
-		NSLog(@"Unable to initialize Apptentive SDK: apptentive signature is nil or empty");
-		return NO;
-	}
-	
-	if (Apptentive.shared.apptentiveKey && Apptentive.shared.apptentiveSignature) {
-		NSLog(@"Apptentive SDK already initialized");
-		return NO;
-	}
-	
-	NSLog(@"Registering Apptentive SDK");
-	
-	ApptentiveConfiguration *apptentiveConfig = [ApptentiveConfiguration configurationWithApptentiveKey:_apptentiveKey apptentiveSignature:_apptentiveSignature];
-	
-	apptentiveConfig.distributionName = @"mParticle";
-	apptentiveConfig.distributionVersion = [MParticle sharedInstance].version;
-	
-	[Apptentive registerWithConfiguration:apptentiveConfig];
-	
-	return YES;
+    if (_apptentiveKey.length == 0) {
+        NSLog(@"Unable to initialize Apptentive SDK: apptentive key is nil or empty");
+        return NO;
+    }
+    
+    if (_apptentiveSignature.length == 0) {
+        NSLog(@"Unable to initialize Apptentive SDK: apptentive signature is nil or empty");
+        return NO;
+    }
+    
+    if (Apptentive.shared.apptentiveKey && Apptentive.shared.apptentiveSignature) {
+        NSLog(@"Apptentive SDK already initialized");
+        return NO;
+    }
+    
+    NSLog(@"Registering Apptentive SDK");
+    
+    ApptentiveConfiguration *apptentiveConfig = [ApptentiveConfiguration configurationWithApptentiveKey:_apptentiveKey apptentiveSignature:_apptentiveSignature];
+    
+    apptentiveConfig.distributionName = @"mParticle";
+    apptentiveConfig.distributionVersion = [MParticle sharedInstance].version;
+    
+    [Apptentive registerWithConfiguration:apptentiveConfig];
+    
+    return YES;
 }
 
 #pragma mark User attributes and identities
@@ -151,9 +151,9 @@ static NSString * _apptentiveSignature = nil;
     } else {
         [[Apptentive sharedConnection] addCustomPersonDataString:value withKey:key];
     }
-
+    
     NSString *name = nil;
-
+    
     if (self.nameComponents) {
         name = [self.nameFormatter stringFromPersonNameComponents:self.nameComponents];
     } else {
@@ -165,11 +165,11 @@ static NSString * _apptentiveSignature = nil;
             name = self.lastName;
         }
     }
-
+    
     if (name) {
         [Apptentive sharedConnection].personName = name;
     }
-
+    
     return [self execStatus:MPKitReturnCodeSuccess];
 }
 
@@ -180,7 +180,7 @@ static NSString * _apptentiveSignature = nil;
 
 - (MPKitExecStatus *)setUserIdentity:(NSString *)identityString identityType:(MPUserIdentity)identityType {
     MPKitReturnCode returnCode;
-
+    
     if (identityType == MPUserIdentityEmail) {
         [Apptentive sharedConnection].personEmailAddress = identityString;
         returnCode = MPKitReturnCodeSuccess;
@@ -192,7 +192,7 @@ static NSString * _apptentiveSignature = nil;
     } else {
         returnCode = MPKitReturnCodeRequirementsNotMet;
     }
-
+    
     return [self execStatus:returnCode];
 }
 
@@ -227,21 +227,21 @@ static NSString * _apptentiveSignature = nil;
     MPTransactionAttributes *transactionAttributes = commerceEvent.transactionAttributes;
     NSMutableArray *commerceItems = [NSMutableArray arrayWithCapacity:commerceEvent.products.count];
     MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeSuccess forwardCount:0];
-
+    
     for (MPProduct *product in commerceEvent.products) {
         NSDictionary *item = [Apptentive extendedDataCommerceItemWithItemID:product.sku name:product.name category:product.category price:product.price quantity:product.quantity currency:commerceEvent.currency];
-
+        
         [commerceItems addObject:item];
         [execStatus incrementForwardCount];
     }
-
+    
     NSDictionary *commerceData = [Apptentive extendedDataCommerceWithTransactionID:transactionAttributes.transactionId affiliation:transactionAttributes.affiliation revenue:transactionAttributes.revenue shipping:transactionAttributes.shipping tax:transactionAttributes.tax currency:commerceEvent.currency commerceItems:commerceItems];
     [execStatus incrementForwardCount];
-
+    
     NSString *eventName = [NSString stringWithFormat:@"eCommerce - %@", [self nameForCommerceEventAction:commerceEvent.action]];
     [[Apptentive sharedConnection] engage:eventName withCustomData:nil withExtendedData:@[commerceData] fromViewController:nil];
     [execStatus incrementForwardCount];
-
+    
     return execStatus;
 }
 
@@ -261,7 +261,7 @@ static NSString * _apptentiveSignature = nil;
 
 - (void)conversationStateChangedNotification:(NSNotification *)notification {
     NSNumber *currentUserId = MParticle.sharedInstance.identity.currentUser.userId;
-
+    
     [Apptentive.shared setMParticleId:[currentUserId isEqualToNumber:@0] ? nil : currentUserId.stringValue];
 }
 
