@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name             = "mParticle-Apptentive"
-    s.version          = "7.10.5"
+    s.version          = "7.11.0"
     s.summary          = "Apptentive integration for mParticle"
 
     s.description      = <<-DESC
@@ -15,6 +15,6 @@ Pod::Spec.new do |s|
 
     s.ios.deployment_target = "9.0"
     s.ios.source_files      = 'mParticle-Apptentive/*.{h,m,mm}'
-    s.ios.dependency 'mParticle-Apple-SDK/mParticle', '~> 7.10.0'
+    s.ios.dependency 'mParticle-Apple-SDK/mParticle', '~> 7.11.0'
     s.ios.dependency 'apptentive-ios', '~> 5.2'
 end
