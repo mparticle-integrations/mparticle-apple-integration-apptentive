@@ -83,7 +83,9 @@ static NSString * _apptentiveSignature = nil;
         } else {
             NSLog(@"Apptentive SDK was not initialized on startup");
         }
-        
+  
+        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(conversationStateChangedNotification:) name:ApptentiveConversationStateDidChangeNotification object:nil];
+
         self->_started = YES;
         
         if ([NSPersonNameComponents class]) {
