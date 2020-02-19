@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name             = "mParticle-Apptentive"
-    s.version          = "7.15.2"
+    s.version          = "7.15.4"
     s.summary          = "Apptentive integration for mParticle"
 
     s.description      = <<-DESC
