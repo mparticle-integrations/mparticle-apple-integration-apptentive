@@ -226,25 +226,28 @@ static NSString * _apptentiveSignature = nil;
 }
 
 - (MPKitExecStatus *)logCommerceEvent:(MPCommerceEvent *)commerceEvent {
-    MPTransactionAttributes *transactionAttributes = commerceEvent.transactionAttributes;
-    NSMutableArray *commerceItems = [NSMutableArray arrayWithCapacity:commerceEvent.products.count];
-    MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeSuccess forwardCount:0];
-    
-    for (MPProduct *product in commerceEvent.products) {
-        NSDictionary *item = [Apptentive extendedDataCommerceItemWithItemID:product.sku name:product.name category:product.category price:product.price quantity:product.quantity currency:commerceEvent.currency];
+    if (commerceEvent.kind == MPCommerceEventKindProduct) {
+        MPTransactionAttributes *transactionAttributes = commerceEvent.transactionAttributes;
+        NSMutableArray *commerceItems = [NSMutableArray arrayWithCapacity:commerceEvent.products.count];
+        MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeSuccess forwardCount:0];
         
-        [commerceItems addObject:item];
+        for (MPProduct *product in commerceEvent.products) {
+            NSDictionary *item = [Apptentive extendedDataCommerceItemWithItemID:product.sku name:product.name category:product.category price:product.price quantity:product.quantity currency:commerceEvent.currency];
+            
+            [commerceItems addObject:item];
+            [execStatus incrementForwardCount];
+        }
+        
+        NSDictionary *commerceData = [Apptentive extendedDataCommerceWithTransactionID:transactionAttributes.transactionId affiliation:transactionAttributes.affiliation revenue:transactionAttributes.revenue shipping:transactionAttributes.shipping tax:transactionAttributes.tax currency:commerceEvent.currency commerceItems:commerceItems];
         [execStatus incrementForwardCount];
+        
+        NSString *eventName = [NSString stringWithFormat:@"eCommerce - %@", [self nameForCommerceEventAction:commerceEvent.action]];
+        [[Apptentive sharedConnection] engage:eventName withCustomData:nil withExtendedData:@[commerceData] fromViewController:nil];
+        [execStatus incrementForwardCount];
+        
+        return execStatus;
     }
-    
-    NSDictionary *commerceData = [Apptentive extendedDataCommerceWithTransactionID:transactionAttributes.transactionId affiliation:transactionAttributes.affiliation revenue:transactionAttributes.revenue shipping:transactionAttributes.shipping tax:transactionAttributes.tax currency:commerceEvent.currency commerceItems:commerceItems];
-    [execStatus incrementForwardCount];
-    
-    NSString *eventName = [NSString stringWithFormat:@"eCommerce - %@", [self nameForCommerceEventAction:commerceEvent.action]];
-    [[Apptentive sharedConnection] engage:eventName withCustomData:nil withExtendedData:@[commerceData] fromViewController:nil];
-    [execStatus incrementForwardCount];
-    
-    return execStatus;
+    return [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeUnavailable];
 }
 
 #pragma mark Events
