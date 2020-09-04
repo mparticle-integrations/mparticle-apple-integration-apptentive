@@ -8,26 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		D37EFA8724F430580091B75B /* Apptentive.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB695FB21F5F549A00A7F4CF /* Apptentive.framework */; platformFilter = ios; };
-		D37EFA8824F430580091B75B /* Apptentive.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DB695FB21F5F549A00A7F4CF /* Apptentive.framework */; platformFilter = ios; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DB7E05A61CB819D300967FDF /* MPKitApptentive.h in Headers */ = {isa = PBXBuildFile; fileRef = DB7E05A41CB819D300967FDF /* MPKitApptentive.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DB7E05A71CB819D300967FDF /* MPKitApptentive.m in Sources */ = {isa = PBXBuildFile; fileRef = DB7E05A51CB819D300967FDF /* MPKitApptentive.m */; };
 		DB9401701CB703F2007ABB18 /* mParticle_Apptentive.h in Headers */ = {isa = PBXBuildFile; fileRef = DB94016F1CB703F2007ABB18 /* mParticle_Apptentive.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DB94017A1CB70C58007ABB18 /* mParticle_Apple_SDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB9401781CB70C58007ABB18 /* mParticle_Apple_SDK.framework */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		D37EFA8924F430590091B75B /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				D37EFA8824F430580091B75B /* Apptentive.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		DB695FB21F5F549A00A7F4CF /* Apptentive.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Apptentive.framework; path = Carthage/Build/iOS/Apptentive.framework; sourceTree = "<group>"; };
@@ -112,7 +97,6 @@
 				DB9401681CB703F2007ABB18 /* Frameworks */,
 				DB9401691CB703F2007ABB18 /* Headers */,
 				DB94016A1CB703F2007ABB18 /* Resources */,
-				D37EFA8924F430590091B75B /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
