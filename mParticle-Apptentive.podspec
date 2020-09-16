@@ -13,8 +13,8 @@ Pod::Spec.new do |s|
     s.source           = { :git => "https://github.com/mparticle-integrations/mparticle-apple-integration-apptentive.git", :tag => s.version.to_s }
     s.social_media_url = "https://twitter.com/mparticle"
 
-    s.ios.deployment_target = "9.0"
+    s.ios.deployment_target = "10.3"
     s.ios.source_files      = 'mParticle-Apptentive/*.{h,m,mm}'
     s.ios.dependency 'mParticle-Apple-SDK/mParticle', '~> 8.0-beta'
-    s.ios.dependency 'apptentive-ios', '~> 5.2'
+    s.ios.dependency 'apptentive-ios', '~> 5.3'
 end
