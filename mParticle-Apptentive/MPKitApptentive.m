@@ -227,7 +227,17 @@ static NSString * _apptentiveSignature = nil;
     }
 }
 
-- (MPKitExecStatus *)logCommerceEvent:(MPCommerceEvent *)commerceEvent {
+- (nonnull MPKitExecStatus *)logBaseEvent:(nonnull MPBaseEvent *)event {
+    if ([event isKindOfClass:[MPEvent class]]) {
+        return [self routeEvent:(MPEvent *)event];
+    } else if ([event isKindOfClass:[MPCommerceEvent class]]) {
+        return [self routeCommerceEvent:(MPCommerceEvent *)event];
+    } else {
+        return [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppboy) returnCode:MPKitReturnCodeUnavailable];
+    }
+}
+
+- (MPKitExecStatus *)routeCommerceEvent:(MPCommerceEvent *)commerceEvent {
     if (commerceEvent.kind == MPCommerceEventKindProduct) {
         MPTransactionAttributes *transactionAttributes = commerceEvent.transactionAttributes;
         NSMutableArray *commerceItems = [NSMutableArray arrayWithCapacity:commerceEvent.products.count];
@@ -254,8 +264,8 @@ static NSString * _apptentiveSignature = nil;
 
 #pragma mark Events
 
-- (MPKitExecStatus *)logEvent:(MPEvent *)event {
-    NSDictionary *eventValues = event.info;
+- (MPKitExecStatus *)routeEvent:(MPEvent *)event {
+    NSDictionary *eventValues = event.customAttributes;
     if ([eventValues count] > 0) {
         [[Apptentive sharedConnection] engage:event.name withCustomData:eventValues fromViewController:nil];
     } else {
