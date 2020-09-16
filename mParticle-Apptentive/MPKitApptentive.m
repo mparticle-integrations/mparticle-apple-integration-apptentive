@@ -86,8 +86,6 @@ static NSString * _apptentiveSignature = nil;
   
         [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(conversationStateChangedNotification:) name:ApptentiveConversationStateDidChangeNotification object:nil];
 
-        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(conversationStateChangedNotification:) name:ApptentiveConversationStateDidChangeNotification object:nil];
-
         self->_started = YES;
         
         if ([NSPersonNameComponents class]) {
