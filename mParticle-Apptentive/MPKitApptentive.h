@@ -7,6 +7,8 @@
 
 #if defined(__has_include) && __has_include(<Apptentive/Apptentive.h>)
 #import <Apptentive/Apptentive.h>
+#elif defined(__has_include) && __has_include(<Apptentive/apptentive-ios-umbrella.h>)
+#import <Apptentive/apptentive-ios-umbrella.h>
 #else
 #import "Apptentive.h"
 #endif
