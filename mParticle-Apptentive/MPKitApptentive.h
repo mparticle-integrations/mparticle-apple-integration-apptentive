@@ -8,7 +8,8 @@
 #if defined(__has_include) && __has_include(<Apptentive/Apptentive.h>)
 #import <Apptentive/Apptentive.h>
 #else
-#import "Apptentive.h"
+#import "ApptentiveMain.h"
+#import "ApptentiveStyleSheet.h"
 #endif
 
 
