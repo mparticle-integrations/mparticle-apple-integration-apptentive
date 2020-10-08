@@ -10,7 +10,8 @@
 #elif defined(__has_include) && __has_include(<Apptentive/apptentive-ios-umbrella.h>)
 #import <Apptentive/apptentive-ios-umbrella.h>
 #else
-#import "Apptentive.h"
+#import "ApptentiveMain.h"
+#import "ApptentiveStyleSheet.h"
 #endif
 
 
