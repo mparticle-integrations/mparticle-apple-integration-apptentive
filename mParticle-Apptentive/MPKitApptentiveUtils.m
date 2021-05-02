@@ -8,13 +8,27 @@
 
 #import "MPKitApptentiveUtils.h"
 
-static id parseValue(id value) {
-    if ([value caseInsensitiveCompare:@"true"]) {
+static NSNumber *parseNumber(NSString *str) {
+    static NSNumberFormatter *formatter = nil;
+    if (!formatter) {
+        formatter = [[NSNumberFormatter alloc] init];
+    }
+    
+    return [formatter numberFromString:str];
+}
+
+static id parseValue(NSString *value) {
+    if ([value caseInsensitiveCompare:@"true"] == NSOrderedSame) {
         return [NSNumber numberWithBool:YES];
     }
     
-    if ([value caseInsensitiveCompare:@"false"]) {
+    if ([value caseInsensitiveCompare:@"false"] == NSOrderedSame) {
         return [NSNumber numberWithBool:NO];
+    }
+    
+    NSNumber *number = parseNumber(value);
+    if (number) {
+        return number;
     }
     
     return value;

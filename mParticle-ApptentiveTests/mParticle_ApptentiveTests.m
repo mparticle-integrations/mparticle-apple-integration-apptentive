@@ -33,7 +33,8 @@
         @"key-8": @"-3.14",
 
         // string
-        @"key-9": @"test"
+        @"key-9": @"123test456"
+        
     };
     
     NSDictionary *expected = @{
@@ -52,7 +53,7 @@
         @"key-8": @-3.14,
 
         // string
-        @"key-9": @"test",
+        @"key-9": @"123test456",
     };
 
     NSDictionary *actual = MPKitApptentiveParseEventInfo(data);
