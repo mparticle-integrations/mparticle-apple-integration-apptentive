@@ -9,18 +9,22 @@
 #import "MPKitApptentiveUtils.h"
 
 static id parseValue(id value) {
-    if ([value isKindOfClass:[NSString class]]) {
-    } else {
+    if ([value caseInsensitiveCompare:@"true"]) {
+        return [NSNumber numberWithBool:YES];
     }
     
-    return nil;
+    if ([value caseInsensitiveCompare:@"false"]) {
+        return [NSNumber numberWithBool:NO];
+    }
+    
+    return value;
 }
 
 NSDictionary* MPKitApptentiveParseEventInfo(NSDictionary *info) {
     NSMutableDictionary *res = [[NSMutableDictionary alloc] init];
     for (id key in info) {
         id value = info[key];
-        res[key] = parseValue(value);
+        res[key] = [value isKindOfClass:[NSString class]] ? parseValue(value) : value;
     }
     return res;
 }

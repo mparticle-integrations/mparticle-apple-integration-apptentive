@@ -8,30 +8,55 @@
 
 #import <XCTest/XCTest.h>
 
+#import "MPKitApptentiveUtils.h"
+
 @interface mParticle_ApptentiveTests : XCTestCase
 
 @end
 
 @implementation mParticle_ApptentiveTests
 
-- (void)setUp {
-    // Put setup code here. This method is called before the invocation of each test method in the class.
-}
+- (void)testMPKitApptentiveParseEventInfo {
+    NSDictionary *data = @{
+        // boolean
+        @"key-1": @"true",
+        @"key-2": @"True",
+        @"key-3": @"false",
+        @"key-4": @"False",
 
-- (void)tearDown {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
-}
+        // integer
+        @"key-5": @"12345",
+        @"key-6": @"-12345",
 
-- (void)testExample {
-    // This is an example of a functional test case.
-    // Use XCTAssert and related functions to verify your tests produce the correct results.
-}
+        // double
+        @"key-7": @"3.14",
+        @"key-8": @"-3.14",
 
-- (void)testPerformanceExample {
-    // This is an example of a performance test case.
-    [self measureBlock:^{
-        // Put the code you want to measure the time of here.
-    }];
+        // string
+        @"key-9": @"test"
+    };
+    
+    NSDictionary *expected = @{
+        // boolean
+        @"key-1": @YES,
+        @"key-2": @YES,
+        @"key-3": @NO,
+        @"key-4": @NO,
+
+        // integer
+        @"key-5": @12345,
+        @"key-6": @-12345,
+
+        // double
+        @"key-7": @3.14,
+        @"key-8": @-3.14,
+
+        // string
+        @"key-9": @"test",
+    };
+
+    NSDictionary *actual = MPKitApptentiveParseEventInfo(data);
+    XCTAssertEqualObjects(expected, actual);
 }
 
 @end
