@@ -12,7 +12,19 @@
 		DB7E05A71CB819D300967FDF /* MPKitApptentive.m in Sources */ = {isa = PBXBuildFile; fileRef = DB7E05A51CB819D300967FDF /* MPKitApptentive.m */; };
 		DB9401701CB703F2007ABB18 /* mParticle_Apptentive.h in Headers */ = {isa = PBXBuildFile; fileRef = DB94016F1CB703F2007ABB18 /* mParticle_Apptentive.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DB94017A1CB70C58007ABB18 /* mParticle_Apple_SDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB9401781CB70C58007ABB18 /* mParticle_Apple_SDK.framework */; };
+		EF233800263F3F0F004B1C55 /* mParticle_ApptentiveTests.m in Sources */ = {isa = PBXBuildFile; fileRef = EF2337FF263F3F0F004B1C55 /* mParticle_ApptentiveTests.m */; };
+		EF233802263F3F0F004B1C55 /* mParticle_Apptentive.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB94016C1CB703F2007ABB18 /* mParticle_Apptentive.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		EF233803263F3F0F004B1C55 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DB9401631CB703F2007ABB18 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DB94016B1CB703F2007ABB18;
+			remoteInfo = "mParticle-Apptentive";
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		DB695FB21F5F549A00A7F4CF /* Apptentive.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Apptentive.framework; path = Carthage/Build/iOS/Apptentive.framework; sourceTree = "<group>"; };
@@ -22,6 +34,9 @@
 		DB94016F1CB703F2007ABB18 /* mParticle_Apptentive.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mParticle_Apptentive.h; sourceTree = "<group>"; };
 		DB9401711CB703F2007ABB18 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DB9401781CB70C58007ABB18 /* mParticle_Apple_SDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = mParticle_Apple_SDK.framework; path = Carthage/Build/iOS/mParticle_Apple_SDK.framework; sourceTree = "<group>"; };
+		EF2337FD263F3F0F004B1C55 /* mParticle-ApptentiveTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "mParticle-ApptentiveTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		EF2337FF263F3F0F004B1C55 /* mParticle_ApptentiveTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mParticle_ApptentiveTests.m; sourceTree = "<group>"; };
+		EF233801263F3F0F004B1C55 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -34,6 +49,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		EF2337FA263F3F0F004B1C55 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EF233802263F3F0F004B1C55 /* mParticle_Apptentive.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -43,6 +66,7 @@
 				DB695FB21F5F549A00A7F4CF /* Apptentive.framework */,
 				DB9401781CB70C58007ABB18 /* mParticle_Apple_SDK.framework */,
 				DB94016E1CB703F2007ABB18 /* mParticle-Apptentive */,
+				EF2337FE263F3F0F004B1C55 /* mParticle-ApptentiveTests */,
 				DB94016D1CB703F2007ABB18 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -51,6 +75,7 @@
 			isa = PBXGroup;
 			children = (
 				DB94016C1CB703F2007ABB18 /* mParticle_Apptentive.framework */,
+				EF2337FD263F3F0F004B1C55 /* mParticle-ApptentiveTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -64,6 +89,15 @@
 				DB9401711CB703F2007ABB18 /* Info.plist */,
 			);
 			path = "mParticle-Apptentive";
+			sourceTree = "<group>";
+		};
+		EF2337FE263F3F0F004B1C55 /* mParticle-ApptentiveTests */ = {
+			isa = PBXGroup;
+			children = (
+				EF2337FF263F3F0F004B1C55 /* mParticle_ApptentiveTests.m */,
+				EF233801263F3F0F004B1C55 /* Info.plist */,
+			);
+			path = "mParticle-ApptentiveTests";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -99,6 +133,24 @@
 			productReference = DB94016C1CB703F2007ABB18 /* mParticle_Apptentive.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		EF2337FC263F3F0F004B1C55 /* mParticle-ApptentiveTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EF233807263F3F0F004B1C55 /* Build configuration list for PBXNativeTarget "mParticle-ApptentiveTests" */;
+			buildPhases = (
+				EF2337F9263F3F0F004B1C55 /* Sources */,
+				EF2337FA263F3F0F004B1C55 /* Frameworks */,
+				EF2337FB263F3F0F004B1C55 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				EF233804263F3F0F004B1C55 /* PBXTargetDependency */,
+			);
+			name = "mParticle-ApptentiveTests";
+			productName = "mParticle-ApptentiveTests";
+			productReference = EF2337FD263F3F0F004B1C55 /* mParticle-ApptentiveTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -112,6 +164,11 @@
 						CreatedOnToolsVersion = 7.3;
 						DevelopmentTeam = Q948K5LXGZ;
 					};
+					EF2337FC263F3F0F004B1C55 = {
+						CreatedOnToolsVersion = 12.3;
+						DevelopmentTeam = 94Z94R59HQ;
+						ProvisioningStyle = Automatic;
+					};
 				};
 			};
 			buildConfigurationList = DB9401661CB703F2007ABB18 /* Build configuration list for PBXProject "mParticle-Apptentive" */;
@@ -119,6 +176,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = DB9401621CB703F2007ABB18;
@@ -127,12 +185,20 @@
 			projectRoot = "";
 			targets = (
 				DB94016B1CB703F2007ABB18 /* mParticle-Apptentive */,
+				EF2337FC263F3F0F004B1C55 /* mParticle-ApptentiveTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		DB94016A1CB703F2007ABB18 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EF2337FB263F3F0F004B1C55 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -150,7 +216,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		EF2337F9263F3F0F004B1C55 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EF233800263F3F0F004B1C55 /* mParticle_ApptentiveTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		EF233804263F3F0F004B1C55 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DB94016B1CB703F2007ABB18 /* mParticle-Apptentive */;
+			targetProxy = EF233803263F3F0F004B1C55 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		DB9401721CB703F2007ABB18 /* Debug */ = {
@@ -308,6 +390,51 @@
 			};
 			name = Release;
 		};
+		EF233805263F3F0F004B1C55 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 94Z94R59HQ;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = "mParticle-ApptentiveTests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.apptentive.mParticle-ApptentiveTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		EF233806263F3F0F004B1C55 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 94Z94R59HQ;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = "mParticle-ApptentiveTests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.apptentive.mParticle-ApptentiveTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -325,6 +452,15 @@
 			buildConfigurations = (
 				DB9401751CB703F2007ABB18 /* Debug */,
 				DB9401761CB703F2007ABB18 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EF233807263F3F0F004B1C55 /* Build configuration list for PBXNativeTarget "mParticle-ApptentiveTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EF233805263F3F0F004B1C55 /* Debug */,
+				EF233806263F3F0F004B1C55 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
