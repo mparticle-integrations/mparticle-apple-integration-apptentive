@@ -14,6 +14,8 @@
 		DB94017A1CB70C58007ABB18 /* mParticle_Apple_SDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB9401781CB70C58007ABB18 /* mParticle_Apple_SDK.framework */; };
 		EF233800263F3F0F004B1C55 /* mParticle_ApptentiveTests.m in Sources */ = {isa = PBXBuildFile; fileRef = EF2337FF263F3F0F004B1C55 /* mParticle_ApptentiveTests.m */; };
 		EF233802263F3F0F004B1C55 /* mParticle_Apptentive.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB94016C1CB703F2007ABB18 /* mParticle_Apptentive.framework */; };
+		EF23381E263F48B2004B1C55 /* MPKitApptentiveUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = EF23381C263F48B2004B1C55 /* MPKitApptentiveUtils.h */; };
+		EF23381F263F48B2004B1C55 /* MPKitApptentiveUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = EF23381D263F48B2004B1C55 /* MPKitApptentiveUtils.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,6 +39,8 @@
 		EF2337FD263F3F0F004B1C55 /* mParticle-ApptentiveTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "mParticle-ApptentiveTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF2337FF263F3F0F004B1C55 /* mParticle_ApptentiveTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mParticle_ApptentiveTests.m; sourceTree = "<group>"; };
 		EF233801263F3F0F004B1C55 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EF23381C263F48B2004B1C55 /* MPKitApptentiveUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPKitApptentiveUtils.h; sourceTree = "<group>"; };
+		EF23381D263F48B2004B1C55 /* MPKitApptentiveUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPKitApptentiveUtils.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +89,8 @@
 			children = (
 				DB7E05A41CB819D300967FDF /* MPKitApptentive.h */,
 				DB7E05A51CB819D300967FDF /* MPKitApptentive.m */,
+				EF23381C263F48B2004B1C55 /* MPKitApptentiveUtils.h */,
+				EF23381D263F48B2004B1C55 /* MPKitApptentiveUtils.m */,
 				DB94016F1CB703F2007ABB18 /* mParticle_Apptentive.h */,
 				DB9401711CB703F2007ABB18 /* Info.plist */,
 			);
@@ -109,6 +115,7 @@
 			files = (
 				DB9401701CB703F2007ABB18 /* mParticle_Apptentive.h in Headers */,
 				DB7E05A61CB819D300967FDF /* MPKitApptentive.h in Headers */,
+				EF23381E263F48B2004B1C55 /* MPKitApptentiveUtils.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -213,6 +220,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DB7E05A71CB819D300967FDF /* MPKitApptentive.m in Sources */,
+				EF23381F263F48B2004B1C55 /* MPKitApptentiveUtils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

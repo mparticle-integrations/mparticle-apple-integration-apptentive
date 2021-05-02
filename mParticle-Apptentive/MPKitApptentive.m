@@ -24,6 +24,8 @@
 #import "Apptentive.h"
 #endif
 
+#import "MPKitApptentiveUtils.h"
+
 NSString * const apptentiveAppKeyKey = @"apptentiveAppKey";
 NSString * const apptentiveAppSignatureKey = @"apptentiveAppSignature";
 NSString * const ApptentiveConversationStateDidChangeNotification = @"ApptentiveConversationStateDidChangeNotification";
@@ -235,7 +237,7 @@ NSString * const ApptentiveConversationStateDidChangeNotification = @"Apptentive
 #pragma mark Events
 
 - (MPKitExecStatus *)logEvent:(MPEvent *)event {
-    NSDictionary *eventValues = event.info;
+    NSDictionary *eventValues = MPKitApptentiveParseEventInfo(event.info);
     if ([eventValues count] > 0) {
         [[Apptentive sharedConnection] engage:event.name withCustomData:eventValues fromViewController:nil];
     } else {
