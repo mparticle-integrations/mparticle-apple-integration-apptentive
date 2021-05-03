@@ -17,7 +17,7 @@ static NSNumber *parseNumber(NSString *str) {
     return [formatter numberFromString:str];
 }
 
-static id parseValue(NSString *value) {
+id MPKitApptentiveParseValue(NSString *value) {
     if ([value caseInsensitiveCompare:@"true"] == NSOrderedSame) {
         return [NSNumber numberWithBool:YES];
     }
@@ -38,7 +38,7 @@ NSDictionary* MPKitApptentiveParseEventInfo(NSDictionary *info) {
     NSMutableDictionary *res = [[NSMutableDictionary alloc] init];
     for (id key in info) {
         id value = info[key];
-        res[key] = [value isKindOfClass:[NSString class]] ? parseValue(value) : value;
+        res[key] = [value isKindOfClass:[NSString class]] ? MPKitApptentiveParseValue(value) : value;
     }
     return res;
 }

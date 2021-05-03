@@ -42,6 +42,26 @@ NSString * const ApptentiveConversationStateDidChangeNotification = @"Apptentive
 
 @end
 
+@interface Apptentive (CustomData)
+
+- (void)addCustomPersonData:(id)value withKey:(NSString *)key;
+
+@end
+
+@implementation Apptentive (CustomData)
+
+- (void)addCustomPersonData:(id)value withKey:(NSString *)key {
+    if ([value isKindOfClass:[NSString class]]) {
+        [[Apptentive sharedConnection] addCustomPersonDataString:value withKey:key];
+    } else if ([value isKindOfClass:[NSNumber class]]) {
+        [[Apptentive sharedConnection] addCustomPersonDataNumber:value withKey:key];
+    } else {
+        NSLog(@"Unexpected custom data type: %@", [value class]);
+    }
+}
+
+@end
+
 @implementation MPKitApptentive
 
 + (NSNumber *)kitCode {
@@ -138,7 +158,7 @@ NSString * const ApptentiveConversationStateDidChangeNotification = @"Apptentive
             self.lastName = value;
         }
     } else {
-        [[Apptentive sharedConnection] addCustomPersonDataString:value withKey:key];
+        [[Apptentive sharedConnection] addCustomPersonData:MPKitApptentiveParseValue(value) withKey:key];
     }
 
     NSString *name = nil;
@@ -239,7 +259,7 @@ NSString * const ApptentiveConversationStateDidChangeNotification = @"Apptentive
 - (MPKitExecStatus *)logEvent:(MPEvent *)event {
     NSDictionary *eventValues = MPKitApptentiveParseEventInfo(event.info);
     if ([eventValues count] > 0) {
-        [[Apptentive sharedConnection] engage:event.name withCustomData:eventValues fromViewController:nil];
+        [[Apptentive sharedConnection] engage:event.name withCustomData:MPKitApptentiveParseEventInfo(eventValues) fromViewController:nil];
     } else {
         [[Apptentive sharedConnection] engage:event.name fromViewController:nil];
     }
