@@ -257,13 +257,19 @@ NSString * const ApptentiveConversationStateDidChangeNotification = @"Apptentive
 #pragma mark Events
 
 - (MPKitExecStatus *)logEvent:(MPEvent *)event {
-    NSDictionary *eventValues = MPKitApptentiveParseEventInfo(event.info);
+    NSDictionary *eventValues = event.info;
     if ([eventValues count] > 0) {
         [[Apptentive sharedConnection] engage:event.name withCustomData:MPKitApptentiveParseEventInfo(eventValues) fromViewController:nil];
     } else {
         [[Apptentive sharedConnection] engage:event.name fromViewController:nil];
     }
     return [self execStatus:MPKitReturnCodeSuccess];
+}
+
+#pragma mark Screen Events
+
+- (MPKitExecStatus *)logScreen:(MPEvent *)event {
+    return [self logEvent:event];
 }
 
 #pragma mark Conversation state
