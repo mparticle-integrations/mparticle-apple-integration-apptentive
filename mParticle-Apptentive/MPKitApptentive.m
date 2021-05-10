@@ -24,6 +24,8 @@
 #import "Apptentive.h"
 #endif
 
+#import "MPKitApptentiveUtils.h"
+
 NSString * const apptentiveAppKeyKey = @"apptentiveAppKey";
 NSString * const apptentiveAppSignatureKey = @"apptentiveAppSignature";
 NSString * const ApptentiveConversationStateDidChangeNotification = @"ApptentiveConversationStateDidChangeNotification";
@@ -37,6 +39,26 @@ NSString * const ApptentiveConversationStateDidChangeNotification = @"Apptentive
 // iOS 9 and later
 @property (strong, nonatomic) NSPersonNameComponents *nameComponents;
 @property (strong, nonatomic) NSPersonNameComponentsFormatter *nameFormatter;
+
+@end
+
+@interface Apptentive (CustomData)
+
+- (void)addCustomPersonData:(id)value withKey:(NSString *)key;
+
+@end
+
+@implementation Apptentive (CustomData)
+
+- (void)addCustomPersonData:(id)value withKey:(NSString *)key {
+    if ([value isKindOfClass:[NSString class]]) {
+        [[Apptentive sharedConnection] addCustomPersonDataString:value withKey:key];
+    } else if ([value isKindOfClass:[NSNumber class]]) {
+        [[Apptentive sharedConnection] addCustomPersonDataNumber:value withKey:key];
+    } else {
+        NSLog(@"Unexpected custom data type: %@", [value class]);
+    }
+}
 
 @end
 
@@ -136,7 +158,7 @@ NSString * const ApptentiveConversationStateDidChangeNotification = @"Apptentive
             self.lastName = value;
         }
     } else {
-        [[Apptentive sharedConnection] addCustomPersonDataString:value withKey:key];
+        [[Apptentive sharedConnection] addCustomPersonData:MPKitApptentiveParseValue(value) withKey:key];
     }
 
     NSString *name = nil;
@@ -237,11 +259,17 @@ NSString * const ApptentiveConversationStateDidChangeNotification = @"Apptentive
 - (MPKitExecStatus *)logEvent:(MPEvent *)event {
     NSDictionary *eventValues = event.info;
     if ([eventValues count] > 0) {
-        [[Apptentive sharedConnection] engage:event.name withCustomData:eventValues fromViewController:nil];
+        [[Apptentive sharedConnection] engage:event.name withCustomData:MPKitApptentiveParseEventInfo(eventValues) fromViewController:nil];
     } else {
         [[Apptentive sharedConnection] engage:event.name fromViewController:nil];
     }
     return [self execStatus:MPKitReturnCodeSuccess];
+}
+
+#pragma mark Screen Events
+
+- (MPKitExecStatus *)logScreen:(MPEvent *)event {
+    return [self logEvent:event];
 }
 
 #pragma mark Conversation state
