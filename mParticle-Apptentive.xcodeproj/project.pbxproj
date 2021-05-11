@@ -64,13 +64,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		D37EFA8624F430580091B75B /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		DB9401621CB703F2007ABB18 = {
 			isa = PBXGroup;
 			children = (
@@ -79,7 +72,6 @@
 				DB94016E1CB703F2007ABB18 /* mParticle-Apptentive */,
 				EF2337FE263F3F0F004B1C55 /* mParticle-ApptentiveTests */,
 				DB94016D1CB703F2007ABB18 /* Products */,
-				D37EFA8624F430580091B75B /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -434,7 +426,11 @@
 				DEVELOPMENT_TEAM = 94Z94R59HQ;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "mParticle-ApptentiveTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.apptentive.mParticle-ApptentiveTests";
@@ -456,7 +452,11 @@
 				DEVELOPMENT_TEAM = 94Z94R59HQ;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "mParticle-ApptentiveTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.apptentive.mParticle-ApptentiveTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
