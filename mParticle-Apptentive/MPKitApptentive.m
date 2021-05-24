@@ -297,7 +297,7 @@ static NSString * _apptentiveSignature = nil;
 - (MPKitExecStatus *)routeEvent:(MPEvent *)event {
     NSDictionary *eventValues = event.customAttributes;
     if ([eventValues count] > 0) {
-        [[Apptentive sharedConnection] engage:event.name withCustomData:MPKitApptentiveParseEventInfo(eventValues) fromViewController:nil];
+        [[Apptentive sharedConnection] engage:event.name withCustomData:[self parseEventInfoDictionary:eventValues] fromViewController:nil];
     } else {
         [[Apptentive sharedConnection] engage:event.name fromViewController:nil];
     }
@@ -316,6 +316,28 @@ static NSString * _apptentiveSignature = nil;
     NSNumber *currentUserId = MParticle.sharedInstance.identity.currentUser.userId;
 
     [Apptentive.shared setMParticleId:[currentUserId isEqualToNumber:@0] ? nil : currentUserId.stringValue];
+}
+
+#pragma mark Helpers
+
+- (NSDictionary *)parseEventInfoDictionary:(NSDictionary *)info {
+    NSMutableDictionary *res = [[NSMutableDictionary alloc] init];
+    for (id key in info) {
+        id value = info[key];
+        res[key] = value;
+        
+        if (self.enableTypeDetection) {
+            id typedValue = MPKitApptentiveParseValue(value);
+            if ([typedValue isKindOfClass:[NSNumber class]]) {
+                if ([typedValue apptentive_isBoolean]) {
+                    res[[NSString stringWithFormat:@"%@_flag", key]] = typedValue;
+                } else {
+                    res[[NSString stringWithFormat:@"%@_number", key]] = typedValue;
+                }
+            }
+        }
+    }
+    return res;
 }
 
 @end
