@@ -4,6 +4,7 @@
 static NSString * const apptentiveAppKeyKey = @"apptentiveAppKey";
 static NSString * const apptentiveAppSignatureKey = @"apptentiveAppSignature";
 static NSString * const apptentiveInitOnStart = @"apptentiveInitOnStart";
+static NSString * const apptentiveEnableTypeDetectionKey = @"enableTypeDetection";
 
 NSString * const ApptentiveConversationStateDidChangeNotification = @"ApptentiveConversationStateDidChangeNotification";
 
@@ -21,24 +22,22 @@ static NSString * _apptentiveSignature = nil;
 @property (strong, nonatomic) NSPersonNameComponents *nameComponents;
 @property (strong, nonatomic) NSPersonNameComponentsFormatter *nameFormatter;
 
-@end
-
-@interface Apptentive (CustomData)
-
-- (void)addCustomPersonData:(id)value withKey:(NSString *)key;
+@property (assign, nonatomic) BOOL enableTypeDetection;
 
 @end
 
-@implementation Apptentive (CustomData)
+@interface NSNumber (ApptentiveBoolean)
 
-- (void)addCustomPersonData:(id)value withKey:(NSString *)key {
-    if ([value isKindOfClass:[NSString class]]) {
-        [[Apptentive sharedConnection] addCustomPersonDataString:value withKey:key];
-    } else if ([value isKindOfClass:[NSNumber class]]) {
-        [[Apptentive sharedConnection] addCustomPersonDataNumber:value withKey:key];
-    } else {
-        NSLog(@"Unexpected custom data type: %@", [value class]);
-    }
+- (BOOL)apptentive_isBoolean;
+
+@end
+
+@implementation NSNumber (ApptentiveBoolean)
+
+- (BOOL)apptentive_isBoolean {
+    CFTypeID boolID = CFBooleanGetTypeID();
+    CFTypeID numID = CFGetTypeID((__bridge CFTypeRef)(self));
+    return numID == boolID;
 }
 
 @end
@@ -80,6 +79,8 @@ static NSString * _apptentiveSignature = nil;
     if (!appKey || !appSignature) {
         return [self execStatus:MPKitReturnCodeRequirementsNotMet];
     }
+    
+    self.enableTypeDetection = [configuration[apptentiveEnableTypeDetectionKey] boolValue];
 
     _configuration = configuration;
 
@@ -172,7 +173,17 @@ static NSString * _apptentiveSignature = nil;
             self.lastName = value;
         }
     } else {
-        [[Apptentive sharedConnection] addCustomPersonData:MPKitApptentiveParseValue(value) withKey:key];
+        [[Apptentive sharedConnection] addCustomPersonDataString:value withKey:key];
+        if (self.enableTypeDetection) {
+            id typedValue = MPKitApptentiveParseValue(value);
+            if ([typedValue isKindOfClass:[NSNumber class]]) {
+                if ([typedValue apptentive_isBoolean]) {
+                    [[Apptentive sharedConnection] addCustomPersonDataBool:typedValue withKey:[NSString stringWithFormat:@"%@_flag", key]];
+                } else {
+                    [[Apptentive sharedConnection] addCustomPersonDataNumber:typedValue withKey:[NSString stringWithFormat:@"%@_number", key]];
+                }
+            }
+        }
     }
 
     NSString *name = nil;
