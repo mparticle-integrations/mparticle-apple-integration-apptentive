@@ -33,12 +33,3 @@ id MPKitApptentiveParseValue(NSString *value) {
     
     return value;
 }
-
-NSDictionary* MPKitApptentiveParseEventInfo(NSDictionary *info) {
-    NSMutableDictionary *res = [[NSMutableDictionary alloc] init];
-    for (id key in info) {
-        id value = info[key];
-        res[key] = [value isKindOfClass:[NSString class]] ? MPKitApptentiveParseValue(value) : value;
-    }
-    return res;
-}
