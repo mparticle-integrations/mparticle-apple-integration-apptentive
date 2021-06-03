@@ -80,7 +80,7 @@ static NSString * _apptentiveSignature = nil;
         return [self execStatus:MPKitReturnCodeRequirementsNotMet];
     }
     
-    self.enableTypeDetection = [configuration[apptentiveEnableTypeDetectionKey] boolValue];
+    self.enableTypeDetection = [configuration objectForKey:apptentiveEnableTypeDetectionKey] != nil ? [configuration[apptentiveEnableTypeDetectionKey] boolValue] : YES;
 
     _configuration = configuration;
 
