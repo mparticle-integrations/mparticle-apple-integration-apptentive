@@ -307,7 +307,7 @@ static NSString * _apptentiveSignature = nil;
 #pragma mark Screen Events
 
 - (MPKitExecStatus *)logScreen:(MPEvent *)event {
-    return [self logEvent:event];
+    return [self logBaseEvent:event];
 }
 
 #pragma mark Conversation state
