@@ -28,6 +28,16 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "EF2337FC263F3F0F004B1C55"
+               BuildableName = "mParticle-ApptentiveTests.xctest"
+               BlueprintName = "mParticle-ApptentiveTests"
+               ReferencedContainer = "container:mParticle-Apptentive.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
