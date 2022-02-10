@@ -26,7 +26,8 @@ let package = Package(
               .byName(name: "mParticle-Apple-SDK"),
               .byName(name: "Apptentive")
             ],
-            path: "./mParticle-Apptentive"
+            path: "./mParticle-Apptentive",
+            exclude: ["Info.plist"]
         )
     ]
 )
