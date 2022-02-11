@@ -296,10 +296,14 @@ static NSString * _apptentiveSignature = nil;
 
 - (MPKitExecStatus *)routeEvent:(MPEvent *)event {
     NSDictionary *eventValues = event.customAttributes;
+
+    UIViewController * rootViewController = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
+
+
     if ([eventValues count] > 0) {
-        [[Apptentive sharedConnection] engage:event.name withCustomData:[self parseEventInfoDictionary:eventValues] fromViewController:nil];
+        [[Apptentive sharedConnection] engage:event.name withCustomData:[self parseEventInfoDictionary:eventValues] fromViewController:rootViewController];
     } else {
-        [[Apptentive sharedConnection] engage:event.name fromViewController:nil];
+        [[Apptentive sharedConnection] engage:event.name fromViewController:rootViewController];
     }
     return [self execStatus:MPKitReturnCodeSuccess];
 }
