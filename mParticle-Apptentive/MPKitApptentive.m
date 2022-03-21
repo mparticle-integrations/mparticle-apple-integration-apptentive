@@ -231,66 +231,14 @@ static NSString * _apptentiveSignature = nil;
     return [self execStatus:returnCode];
 }
 
-#pragma mark e-Commerce
-
-- (NSString *)nameForCommerceEventAction:(MPCommerceEventAction)action {
-    switch (action) {
-        case MPCommerceEventActionAddToCart:
-            return @"Add To Cart";
-        case MPCommerceEventActionRemoveFromCart:
-            return @"Remove From Cart";
-        case MPCommerceEventActionAddToWishList:
-            return @"Add To Wish List";
-        case MPCommerceEventActionRemoveFromWishlist:
-            return @"Remove From Wishlist";
-        case MPCommerceEventActionCheckout:
-            return @"Checkout";
-        case MPCommerceEventActionCheckoutOptions:
-            return @"Checkout Options";
-        case MPCommerceEventActionClick:
-            return @"Click";
-        case MPCommerceEventActionViewDetail:
-            return @"View Detail";
-        case MPCommerceEventActionPurchase:
-            return @"Purchase";
-        case MPCommerceEventActionRefund:
-            return @"Refund";
-    }
-}
+#pragma mark Events
 
 - (nonnull MPKitExecStatus *)logBaseEvent:(nonnull MPBaseEvent *)event {
-    if ([event isKindOfClass:[MPEvent class]]) {
+    if ([event isKindOfClass:[MPBaseEvent class]]) {
         return [self routeEvent:(MPEvent *)event];
-    } else if ([event isKindOfClass:[MPCommerceEvent class]]) {
-        return [self routeCommerceEvent:(MPCommerceEvent *)event];
     } else {
-        return [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppboy) returnCode:MPKitReturnCodeUnavailable];
+        return [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceApptentive) returnCode:MPKitReturnCodeUnavailable];
     }
-}
-
-- (MPKitExecStatus *)routeCommerceEvent:(MPCommerceEvent *)commerceEvent {
-    if (commerceEvent.kind == MPCommerceEventKindProduct) {
-        MPTransactionAttributes *transactionAttributes = commerceEvent.transactionAttributes;
-        NSMutableArray *commerceItems = [NSMutableArray arrayWithCapacity:commerceEvent.products.count];
-        MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeSuccess forwardCount:0];
-
-        for (MPProduct *product in commerceEvent.products) {
-            NSDictionary *item = [Apptentive extendedDataCommerceItemWithItemID:product.sku name:product.name category:product.category price:product.price quantity:product.quantity currency:commerceEvent.currency];
-
-            [commerceItems addObject:item];
-            [execStatus incrementForwardCount];
-        }
-
-        NSDictionary *commerceData = [Apptentive extendedDataCommerceWithTransactionID:transactionAttributes.transactionId affiliation:transactionAttributes.affiliation revenue:transactionAttributes.revenue shipping:transactionAttributes.shipping tax:transactionAttributes.tax currency:commerceEvent.currency commerceItems:commerceItems];
-        [execStatus incrementForwardCount];
-
-        NSString *eventName = [NSString stringWithFormat:@"eCommerce - %@", [self nameForCommerceEventAction:commerceEvent.action]];
-        [[Apptentive sharedConnection] engage:eventName withCustomData:nil withExtendedData:@[commerceData] fromViewController:nil];
-        [execStatus incrementForwardCount];
-
-        return execStatus;
-    }
-    return [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeUnavailable];
 }
 
 #pragma mark Events
