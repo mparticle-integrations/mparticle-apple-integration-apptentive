@@ -174,14 +174,14 @@ static NSString * _apptentiveSignature = nil;
             self.lastName = value;
         }
     } else {
-        [[Apptentive sharedConnection] addCustomPersonDataString:value withKey:key];
+        [Apptentive.shared addCustomPersonDataString:value withKey:key];
         if (self.enableTypeDetection) {
             id typedValue = MPKitApptentiveParseValue(value);
             if ([typedValue isKindOfClass:[NSNumber class]]) {
                 if ([typedValue apptentive_isBoolean]) {
-                    [[Apptentive sharedConnection] addCustomPersonDataBool:typedValue withKey:[NSString stringWithFormat:@"%@_flag", key]];
+                    [Apptentive.shared addCustomPersonDataBool:typedValue withKey:[NSString stringWithFormat:@"%@_flag", key]];
                 } else {
-                    [[Apptentive sharedConnection] addCustomPersonDataNumber:typedValue withKey:[NSString stringWithFormat:@"%@_number", key]];
+                    [Apptentive.shared addCustomPersonDataNumber:typedValue withKey:[NSString stringWithFormat:@"%@_number", key]];
                 }
             }
         }
@@ -202,14 +202,14 @@ static NSString * _apptentiveSignature = nil;
     }
 
     if (name) {
-        [Apptentive sharedConnection].personName = name;
+        Apptentive.shared.personName = name;
     }
 
     return [self execStatus:MPKitReturnCodeSuccess];
 }
 
 - (MPKitExecStatus *)removeUserAttribute:(NSString *)key {
-    [[Apptentive sharedConnection] removeCustomPersonDataWithKey:key];
+    [Apptentive.shared removeCustomPersonDataWithKey:key];
     return [self execStatus:MPKitReturnCodeSuccess];
 }
 
@@ -217,11 +217,11 @@ static NSString * _apptentiveSignature = nil;
     MPKitReturnCode returnCode;
 
     if (identityType == MPUserIdentityEmail) {
-        [Apptentive sharedConnection].personEmailAddress = identityString;
+        Apptentive.shared.personEmailAddress = identityString;
         returnCode = MPKitReturnCodeSuccess;
     } else if (identityType == MPUserIdentityCustomerId) {
-        if ([Apptentive sharedConnection].personName.length == 0) {
-            [Apptentive sharedConnection].personName = identityString;
+        if (Apptentive.shared.personName.length == 0) {
+            Apptentive.shared.personName = identityString;
         }
         returnCode = MPKitReturnCodeSuccess;
     } else {
@@ -298,9 +298,9 @@ static NSString * _apptentiveSignature = nil;
 - (MPKitExecStatus *)routeEvent:(MPEvent *)event {
     NSDictionary *eventValues = event.customAttributes;
     if ([eventValues count] > 0) {
-        [[Apptentive sharedConnection] engage:event.name withCustomData:[self parseEventInfoDictionary:eventValues] fromViewController:nil];
+        [Apptentive.shared engage:event.name withCustomData:[self parseEventInfoDictionary:eventValues] fromViewController:nil];
     } else {
-        [[Apptentive sharedConnection] engage:event.name fromViewController:nil];
+        [Apptentive.shared engage:event.name fromViewController:nil];
     }
     return [self execStatus:MPKitReturnCodeSuccess];
 }
