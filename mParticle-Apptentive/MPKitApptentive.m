@@ -1,6 +1,13 @@
 #import "MPKitApptentive.h"
 #import "MPKitApptentiveUtils.h"
 
+#if defined(__has_include) && __has_include(<ApptentiveKit/ApptentiveKit-Swift.h>)
+#import <ApptentiveKit/ApptentiveKit-Swift.h>
+#else
+#import "ApptentiveKit-Swift.h"
+#endif
+
+
 static NSString * const apptentiveAppKeyKey = @"apptentiveAppKey";
 static NSString * const apptentiveAppSignatureKey = @"apptentiveAppSignature";
 static NSString * const apptentiveInitOnStart = @"apptentiveInitOnStart";
@@ -140,13 +147,7 @@ static NSString * _apptentiveSignature = nil;
         return NO;
     }
 
-    if (Apptentive.shared.apptentiveKey && Apptentive.shared.apptentiveSignature) {
-        NSLog(@"Apptentive SDK already initialized");
-        return NO;
-    }
-
     NSLog(@"Registering Apptentive SDK");
-
     ApptentiveConfiguration *apptentiveConfig = [ApptentiveConfiguration configurationWithApptentiveKey:_apptentiveKey apptentiveSignature:_apptentiveSignature];
 
     apptentiveConfig.distributionName = @"mParticle";
