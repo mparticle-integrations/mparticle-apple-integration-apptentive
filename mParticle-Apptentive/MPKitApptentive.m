@@ -158,6 +158,21 @@ static NSString * _apptentiveSignature = nil;
     return YES;
 }
 
+#pragma mark Application
+
+- (MPKitExecStatus *)receivedUserNotification:(NSDictionary *)userInfo {
+    BOOL _ = [Apptentive.shared didReceiveRemoteNotification:userInfo fetchCompletionHandler:^(UIBackgroundFetchResult _) {}];
+
+    return [self execStatus:MPKitReturnCodeSuccess];
+}
+
+- (MPKitExecStatus *)setDeviceToken:(NSData *)deviceToken {
+    [Apptentive.shared setPushProvider:ApptentivePushProviderApptentive deviceToken:deviceToken];
+
+    return [self execStatus:MPKitReturnCodeSuccess];
+}
+
+
 #pragma mark User attributes and identities
 
 - (MPKitExecStatus *)setUserAttribute:(NSString *)key value:(NSString *)value {
