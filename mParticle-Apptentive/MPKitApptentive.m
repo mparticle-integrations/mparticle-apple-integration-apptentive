@@ -316,7 +316,7 @@ static NSString * _apptentiveSignature = nil;
 - (void)conversationStateChangedNotification:(NSNotification *)notification {
     NSNumber *currentUserId = MParticle.sharedInstance.identity.currentUser.userId;
 
-    [Apptentive.shared setMParticleId:[currentUserId isEqualToNumber:@0] ? nil : currentUserId.stringValue];
+    [Apptentive.shared setMParticleID:[currentUserId isEqualToNumber:@0] ? nil : currentUserId.stringValue];
 }
 
 #pragma mark Helpers
