@@ -13,22 +13,14 @@ static NSString * const apptentiveAppSignatureKey = @"apptentiveAppSignature";
 static NSString * const apptentiveInitOnStart = @"apptentiveInitOnStart";
 static NSString * const apptentiveEnableTypeDetectionKey = @"enableTypeDetection";
 
-NSString * const ApptentiveConversationStateDidChangeNotification = @"ApptentiveConversationStateDidChangeNotification";
-
 // we need to keep the credentials in order to init the SDK later on
 static NSString * _apptentiveKey = nil;
 static NSString * _apptentiveSignature = nil;
 
 @interface MPKitApptentive ()
 
-// iOS 8 and earlier
-@property (strong, nonatomic) NSString *firstName;
-@property (strong, nonatomic) NSString *lastName;
-
-// iOS 9 and later
 @property (strong, nonatomic) NSPersonNameComponents *nameComponents;
 @property (strong, nonatomic) NSPersonNameComponentsFormatter *nameFormatter;
-
 @property (assign, nonatomic) BOOL enableTypeDetection;
 
 @end
@@ -113,8 +105,6 @@ static NSString * _apptentiveSignature = nil;
             NSLog(@"Apptentive SDK was not initialized on startup");
         }
 
-        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(conversationStateChangedNotification:) name:ApptentiveConversationStateDidChangeNotification object:nil];
-
         self->_started = YES;
 
         if ([NSPersonNameComponents class]) {
@@ -128,6 +118,9 @@ static NSString * _apptentiveSignature = nil;
             [[NSNotificationCenter defaultCenter] postNotificationName:mParticleKitDidBecomeActiveNotification
                                                                 object:nil
                                                               userInfo:userInfo];
+
+            NSNumber *currentUserId = MParticle.sharedInstance.identity.currentUser.userId;
+            [Apptentive.shared setMParticleID:[currentUserId isEqualToNumber:@0] ? nil : currentUserId.stringValue];
         });
     });
 }
@@ -153,6 +146,28 @@ static NSString * _apptentiveSignature = nil;
     apptentiveConfig.distributionName = @"mParticle";
     apptentiveConfig.distributionVersion = [MParticle sharedInstance].version;
 
+    switch ([MParticle sharedInstance].logLevel) {
+        case MPILogLevelNone:
+            apptentiveConfig.logLevel = ApptentiveLogLevelCrit;
+            break;
+
+        case MPILogLevelError:
+            apptentiveConfig.logLevel = ApptentiveLogLevelError;
+            break;
+
+        case MPILogLevelWarning:
+            apptentiveConfig.logLevel = ApptentiveLogLevelWarn;
+            break;
+
+        case MPILogLevelDebug:
+            apptentiveConfig.logLevel = ApptentiveLogLevelDebug;
+            break;
+
+        case MPILogLevelVerbose:
+            apptentiveConfig.logLevel = ApptentiveLogLevelVerbose;
+            break;
+    }
+
     [Apptentive registerWithConfiguration:apptentiveConfig];
 
     return YES;
@@ -160,34 +175,40 @@ static NSString * _apptentiveSignature = nil;
 
 #pragma mark Application
 
+// NOTE: Called when a remote notification is received
 - (MPKitExecStatus *)receivedUserNotification:(NSDictionary *)userInfo {
-    BOOL _ = [Apptentive.shared didReceiveRemoteNotification:userInfo fetchCompletionHandler:^(UIBackgroundFetchResult _) {}];
+    BOOL handledByApptentive = [Apptentive.shared didReceiveRemoteNotification:userInfo fetchCompletionHandler:^(UIBackgroundFetchResult result) {}];
+
+    NSLog(@"Apptentive %@ handle remote notification.", handledByApptentive ? @"did" : @"did not");
 
     return [self execStatus:MPKitReturnCodeSuccess];
 }
 
 - (MPKitExecStatus *)setDeviceToken:(NSData *)deviceToken {
+    // TODO: use `setRemoteNotificationToken` after next ApptentiveKit release (missing @objc annotation).
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [Apptentive.shared setPushProvider:ApptentivePushProviderApptentive deviceToken:deviceToken];
+#pragma clang diagnostic pop
 
     return [self execStatus:MPKitReturnCodeSuccess];
 }
 
+- (MPKitExecStatus *)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response {
+    BOOL handledByApptentive = [Apptentive.shared didReceveUserNotificationResponse:response withCompletionHandler:^{}];
+
+    NSLog(@"Apptentive %@ handle user notification response.", handledByApptentive ? @"did" : @"did not");
+
+    return [self execStatus:MPKitReturnCodeSuccess];
+}
 
 #pragma mark User attributes and identities
 
 - (MPKitExecStatus *)setUserAttribute:(NSString *)key value:(NSString *)value {
     if ([key isEqualToString:mParticleUserAttributeFirstName]) {
-        if (self.nameComponents) {
-            self.nameComponents.givenName = value;
-        } else {
-            self.firstName = value;
-        }
+        self.nameComponents.givenName = value;
     } else if ([key isEqualToString:mParticleUserAttributeLastName]) {
-        if (self.nameComponents) {
-            self.nameComponents.familyName = value;
-        } else {
-            self.lastName = value;
-        }
+        self.nameComponents.familyName = value;
     } else {
         [Apptentive.shared addCustomPersonDataString:value withKey:key];
         if (self.enableTypeDetection) {
@@ -202,19 +223,7 @@ static NSString * _apptentiveSignature = nil;
         }
     }
 
-    NSString *name = nil;
-
-    if (self.nameComponents) {
-        name = [self.nameFormatter stringFromPersonNameComponents:self.nameComponents];
-    } else {
-        if (self.firstName.length && self.lastName.length) {
-            name = [@[ self.firstName, self.lastName ] componentsJoinedByString:@" "];
-        } else if (self.firstName.length) {
-            name = self.firstName;
-        } else if (self.lastName.length) {
-            name = self.lastName;
-        }
-    }
+    NSString *name = [self.nameFormatter stringFromPersonNameComponents:self.nameComponents];
 
     if (name) {
         Apptentive.shared.personName = name;
@@ -272,14 +281,6 @@ static NSString * _apptentiveSignature = nil;
 
 - (MPKitExecStatus *)logScreen:(MPEvent *)event {
     return [self logBaseEvent:event];
-}
-
-#pragma mark Conversation state
-
-- (void)conversationStateChangedNotification:(NSNotification *)notification {
-    NSNumber *currentUserId = MParticle.sharedInstance.identity.currentUser.userId;
-
-    [Apptentive.shared setMParticleID:[currentUserId isEqualToNumber:@0] ? nil : currentUserId.stringValue];
 }
 
 #pragma mark Helpers
