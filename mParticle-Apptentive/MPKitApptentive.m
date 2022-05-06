@@ -168,7 +168,7 @@ static NSString * _apptentiveSignature = nil;
             break;
     }
 
-    [Apptentive registerWithConfiguration:apptentiveConfig];
+    [Apptentive.shared registerWithConfiguration:apptentiveConfig completion:nil];
 
     return YES;
 }
