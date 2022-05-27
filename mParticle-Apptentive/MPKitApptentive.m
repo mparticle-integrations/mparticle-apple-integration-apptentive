@@ -7,7 +7,6 @@
 #import "ApptentiveKit-Swift.h"
 #endif
 
-
 static NSString * const apptentiveAppKeyKey = @"apptentiveAppKey";
 static NSString * const apptentiveAppSignatureKey = @"apptentiveAppSignature";
 static NSString * const apptentiveInitOnStart = @"apptentiveInitOnStart";
@@ -21,6 +20,24 @@ static NSString * _apptentiveSignature = nil;
 
 @property (strong, nonatomic) NSPersonNameComponents *nameComponents;
 @property (strong, nonatomic) NSPersonNameComponentsFormatter *nameFormatter;
+@property (assign, nonatomic) BOOL enableTypeDetection;
+
+@end
+
+@interface NSNumber (ApptentiveBoolean)
+
+- (BOOL)apptentive_isBoolean;
+
+@end
+
+@implementation NSNumber (ApptentiveBoolean)
+
+- (BOOL)apptentive_isBoolean {
+    CFTypeID boolID = CFBooleanGetTypeID();
+    CFTypeID numID = CFGetTypeID((__bridge CFTypeRef)(self));
+    return numID == boolID;
+}
+
 @property (assign, nonatomic) BOOL enableTypeDetection;
 
 @end
@@ -281,6 +298,28 @@ static NSString * _apptentiveSignature = nil;
 
 - (MPKitExecStatus *)logScreen:(MPEvent *)event {
     return [self logBaseEvent:event];
+}
+
+#pragma mark Helpers
+
+- (NSDictionary *)parseEventInfoDictionary:(NSDictionary *)info {
+    NSMutableDictionary *res = [[NSMutableDictionary alloc] init];
+    for (id key in info) {
+        id value = info[key];
+        res[key] = value;
+        
+        if (self.enableTypeDetection) {
+            id typedValue = MPKitApptentiveParseValue(value);
+            if ([typedValue isKindOfClass:[NSNumber class]]) {
+                if ([typedValue apptentive_isBoolean]) {
+                    res[[NSString stringWithFormat:@"%@_flag", key]] = typedValue;
+                } else {
+                    res[[NSString stringWithFormat:@"%@_number", key]] = typedValue;
+                }
+            }
+        }
+    }
+    return res;
 }
 
 #pragma mark Helpers
