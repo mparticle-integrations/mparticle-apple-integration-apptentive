@@ -3,11 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		D37EFA8724F430580091B75B /* Apptentive.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB695FB21F5F549A00A7F4CF /* Apptentive.framework */; platformFilter = ios; };
+		D37EFA8724F430580091B75B /* ApptentiveKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB695FB21F5F549A00A7F4CF /* ApptentiveKit.framework */; platformFilter = ios; };
 		DB7E05A61CB819D300967FDF /* MPKitApptentive.h in Headers */ = {isa = PBXBuildFile; fileRef = DB7E05A41CB819D300967FDF /* MPKitApptentive.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DB7E05A71CB819D300967FDF /* MPKitApptentive.m in Sources */ = {isa = PBXBuildFile; fileRef = DB7E05A51CB819D300967FDF /* MPKitApptentive.m */; };
 		DB9401701CB703F2007ABB18 /* mParticle_Apptentive.h in Headers */ = {isa = PBXBuildFile; fileRef = DB94016F1CB703F2007ABB18 /* mParticle_Apptentive.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -29,7 +29,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		DB695FB21F5F549A00A7F4CF /* Apptentive.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Apptentive.framework; path = Carthage/Build/iOS/Apptentive.framework; sourceTree = "<group>"; };
+		DB695FB21F5F549A00A7F4CF /* ApptentiveKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApptentiveKit.framework; path = Carthage/Build/iOS/ApptentiveKit.framework; sourceTree = "<group>"; };
 		DB7E05A41CB819D300967FDF /* MPKitApptentive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPKitApptentive.h; sourceTree = "<group>"; };
 		DB7E05A51CB819D300967FDF /* MPKitApptentive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPKitApptentive.m; sourceTree = "<group>"; };
 		DB94016C1CB703F2007ABB18 /* mParticle_Apptentive.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = mParticle_Apptentive.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -48,7 +48,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D37EFA8724F430580091B75B /* Apptentive.framework in Frameworks */,
+				D37EFA8724F430580091B75B /* ApptentiveKit.framework in Frameworks */,
 				DB94017A1CB70C58007ABB18 /* mParticle_Apple_SDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -67,7 +67,7 @@
 		DB9401621CB703F2007ABB18 = {
 			isa = PBXGroup;
 			children = (
-				DB695FB21F5F549A00A7F4CF /* Apptentive.framework */,
+				DB695FB21F5F549A00A7F4CF /* ApptentiveKit.framework */,
 				DB9401781CB70C58007ABB18 /* mParticle_Apple_SDK.framework */,
 				DB94016E1CB703F2007ABB18 /* mParticle-Apptentive */,
 				EF2337FE263F3F0F004B1C55 /* mParticle-ApptentiveTests */,
@@ -294,7 +294,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -349,7 +349,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -362,6 +362,10 @@
 		DB9401751CB703F2007ABB18 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					arm64,
+					x86_64,
+				);
 				CODE_SIGN_IDENTITY = "";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -389,6 +393,10 @@
 		DB9401761CB703F2007ABB18 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					arm64,
+					x86_64,
+				);
 				CODE_SIGN_IDENTITY = "";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
