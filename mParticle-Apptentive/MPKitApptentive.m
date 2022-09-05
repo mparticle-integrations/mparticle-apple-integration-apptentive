@@ -1,12 +1,16 @@
 #import "MPKitApptentive.h"
 #import "MPKitApptentiveUtils.h"
 
+#if defined(__has_include) && __has_include(<ApptentiveKit/ApptentiveKit-Swift.h>)
+#import <ApptentiveKit/ApptentiveKit-Swift.h>
+#else
+@import ApptentiveKit;
+#endif
+
 static NSString * const apptentiveAppKeyKey = @"apptentiveAppKey";
 static NSString * const apptentiveAppSignatureKey = @"apptentiveAppSignature";
 static NSString * const apptentiveInitOnStart = @"apptentiveInitOnStart";
 static NSString * const apptentiveEnableTypeDetectionKey = @"enableTypeDetection";
-
-NSString * const ApptentiveConversationStateDidChangeNotification = @"ApptentiveConversationStateDidChangeNotification";
 
 // we need to keep the credentials in order to init the SDK later on
 static NSString * _apptentiveKey = nil;
@@ -14,14 +18,8 @@ static NSString * _apptentiveSignature = nil;
 
 @interface MPKitApptentive ()
 
-// iOS 8 and earlier
-@property (strong, nonatomic) NSString *firstName;
-@property (strong, nonatomic) NSString *lastName;
-
-// iOS 9 and later
 @property (strong, nonatomic) NSPersonNameComponents *nameComponents;
 @property (strong, nonatomic) NSPersonNameComponentsFormatter *nameFormatter;
-
 @property (assign, nonatomic) BOOL enableTypeDetection;
 
 @end
@@ -106,8 +104,6 @@ static NSString * _apptentiveSignature = nil;
             NSLog(@"Apptentive SDK was not initialized on startup");
         }
 
-        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(conversationStateChangedNotification:) name:ApptentiveConversationStateDidChangeNotification object:nil];
-
         self->_started = YES;
 
         if ([NSPersonNameComponents class]) {
@@ -121,6 +117,9 @@ static NSString * _apptentiveSignature = nil;
             [[NSNotificationCenter defaultCenter] postNotificationName:mParticleKitDidBecomeActiveNotification
                                                                 object:nil
                                                               userInfo:userInfo];
+
+            NSNumber *currentUserId = MParticle.sharedInstance.identity.currentUser.userId;
+            [Apptentive.shared setMParticleID:[currentUserId isEqualToNumber:@0] ? nil : currentUserId.stringValue];
         });
     });
 }
@@ -140,75 +139,100 @@ static NSString * _apptentiveSignature = nil;
         return NO;
     }
 
-    if (Apptentive.shared.apptentiveKey && Apptentive.shared.apptentiveSignature) {
-        NSLog(@"Apptentive SDK already initialized");
-        return NO;
-    }
-
     NSLog(@"Registering Apptentive SDK");
-
     ApptentiveConfiguration *apptentiveConfig = [ApptentiveConfiguration configurationWithApptentiveKey:_apptentiveKey apptentiveSignature:_apptentiveSignature];
 
     apptentiveConfig.distributionName = @"mParticle";
     apptentiveConfig.distributionVersion = [MParticle sharedInstance].version;
 
-    [Apptentive registerWithConfiguration:apptentiveConfig];
+    switch ([MParticle sharedInstance].logLevel) {
+        case MPILogLevelNone:
+            apptentiveConfig.logLevel = ApptentiveLogLevelCrit;
+            break;
+
+        case MPILogLevelError:
+            apptentiveConfig.logLevel = ApptentiveLogLevelError;
+            break;
+
+        case MPILogLevelWarning:
+            apptentiveConfig.logLevel = ApptentiveLogLevelWarn;
+            break;
+
+        case MPILogLevelDebug:
+            apptentiveConfig.logLevel = ApptentiveLogLevelDebug;
+            break;
+
+        case MPILogLevelVerbose:
+            apptentiveConfig.logLevel = ApptentiveLogLevelVerbose;
+            break;
+    }
+
+    [Apptentive.shared registerWithConfiguration:apptentiveConfig completion:nil];
 
     return YES;
+}
+
+#pragma mark Application
+
+// NOTE: Called when a remote notification is received
+- (MPKitExecStatus *)receivedUserNotification:(NSDictionary *)userInfo {
+    BOOL handledByApptentive = [Apptentive.shared didReceiveRemoteNotification:userInfo fetchCompletionHandler:^(UIBackgroundFetchResult result) {}];
+
+    NSLog(@"Apptentive %@ handle remote notification.", handledByApptentive ? @"did" : @"did not");
+
+    return [self execStatus:MPKitReturnCodeSuccess];
+}
+
+- (MPKitExecStatus *)setDeviceToken:(NSData *)deviceToken {
+    // TODO: use `setRemoteNotificationToken` after next ApptentiveKit release (missing @objc annotation).
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    [Apptentive.shared setPushProvider:ApptentivePushProviderApptentive deviceToken:deviceToken];
+#pragma clang diagnostic pop
+
+    return [self execStatus:MPKitReturnCodeSuccess];
+}
+
+- (MPKitExecStatus *)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response {
+    BOOL handledByApptentive = [Apptentive.shared didReceveUserNotificationResponse:response withCompletionHandler:^{}];
+
+    NSLog(@"Apptentive %@ handle user notification response.", handledByApptentive ? @"did" : @"did not");
+
+    return [self execStatus:MPKitReturnCodeSuccess];
 }
 
 #pragma mark User attributes and identities
 
 - (MPKitExecStatus *)setUserAttribute:(NSString *)key value:(NSString *)value {
     if ([key isEqualToString:mParticleUserAttributeFirstName]) {
-        if (self.nameComponents) {
-            self.nameComponents.givenName = value;
-        } else {
-            self.firstName = value;
-        }
+        self.nameComponents.givenName = value;
     } else if ([key isEqualToString:mParticleUserAttributeLastName]) {
-        if (self.nameComponents) {
-            self.nameComponents.familyName = value;
-        } else {
-            self.lastName = value;
-        }
+        self.nameComponents.familyName = value;
     } else {
-        [[Apptentive sharedConnection] addCustomPersonDataString:value withKey:key];
+        [Apptentive.shared addCustomPersonDataString:value withKey:key];
         if (self.enableTypeDetection) {
             id typedValue = MPKitApptentiveParseValue(value);
             if ([typedValue isKindOfClass:[NSNumber class]]) {
                 if ([typedValue apptentive_isBoolean]) {
-                    [[Apptentive sharedConnection] addCustomPersonDataBool:typedValue withKey:[NSString stringWithFormat:@"%@_flag", key]];
+                    [Apptentive.shared addCustomPersonDataBool:typedValue withKey:[NSString stringWithFormat:@"%@_flag", key]];
                 } else {
-                    [[Apptentive sharedConnection] addCustomPersonDataNumber:typedValue withKey:[NSString stringWithFormat:@"%@_number", key]];
+                    [Apptentive.shared addCustomPersonDataNumber:typedValue withKey:[NSString stringWithFormat:@"%@_number", key]];
                 }
             }
         }
     }
 
-    NSString *name = nil;
-
-    if (self.nameComponents) {
-        name = [self.nameFormatter stringFromPersonNameComponents:self.nameComponents];
-    } else {
-        if (self.firstName.length && self.lastName.length) {
-            name = [@[ self.firstName, self.lastName ] componentsJoinedByString:@" "];
-        } else if (self.firstName.length) {
-            name = self.firstName;
-        } else if (self.lastName.length) {
-            name = self.lastName;
-        }
-    }
+    NSString *name = [self.nameFormatter stringFromPersonNameComponents:self.nameComponents];
 
     if (name) {
-        [Apptentive sharedConnection].personName = name;
+        Apptentive.shared.personName = name;
     }
 
     return [self execStatus:MPKitReturnCodeSuccess];
 }
 
 - (MPKitExecStatus *)removeUserAttribute:(NSString *)key {
-    [[Apptentive sharedConnection] removeCustomPersonDataWithKey:key];
+    [Apptentive.shared removeCustomPersonDataWithKey:key];
     return [self execStatus:MPKitReturnCodeSuccess];
 }
 
@@ -216,11 +240,11 @@ static NSString * _apptentiveSignature = nil;
     MPKitReturnCode returnCode;
 
     if (identityType == MPUserIdentityEmail) {
-        [Apptentive sharedConnection].personEmailAddress = identityString;
+        Apptentive.shared.personEmailAddress = identityString;
         returnCode = MPKitReturnCodeSuccess;
     } else if (identityType == MPUserIdentityCustomerId) {
-        if ([Apptentive sharedConnection].personName.length == 0) {
-            [Apptentive sharedConnection].personName = identityString;
+        if (Apptentive.shared.personName.length == 0) {
+            Apptentive.shared.personName = identityString;
         }
         returnCode = MPKitReturnCodeSuccess;
     } else {
@@ -230,66 +254,14 @@ static NSString * _apptentiveSignature = nil;
     return [self execStatus:returnCode];
 }
 
-#pragma mark e-Commerce
-
-- (NSString *)nameForCommerceEventAction:(MPCommerceEventAction)action {
-    switch (action) {
-        case MPCommerceEventActionAddToCart:
-            return @"Add To Cart";
-        case MPCommerceEventActionRemoveFromCart:
-            return @"Remove From Cart";
-        case MPCommerceEventActionAddToWishList:
-            return @"Add To Wish List";
-        case MPCommerceEventActionRemoveFromWishlist:
-            return @"Remove From Wishlist";
-        case MPCommerceEventActionCheckout:
-            return @"Checkout";
-        case MPCommerceEventActionCheckoutOptions:
-            return @"Checkout Options";
-        case MPCommerceEventActionClick:
-            return @"Click";
-        case MPCommerceEventActionViewDetail:
-            return @"View Detail";
-        case MPCommerceEventActionPurchase:
-            return @"Purchase";
-        case MPCommerceEventActionRefund:
-            return @"Refund";
-    }
-}
+#pragma mark Events
 
 - (nonnull MPKitExecStatus *)logBaseEvent:(nonnull MPBaseEvent *)event {
-    if ([event isKindOfClass:[MPEvent class]]) {
+    if ([event isKindOfClass:[MPBaseEvent class]]) {
         return [self routeEvent:(MPEvent *)event];
-    } else if ([event isKindOfClass:[MPCommerceEvent class]]) {
-        return [self routeCommerceEvent:(MPCommerceEvent *)event];
     } else {
-        return [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppboy) returnCode:MPKitReturnCodeUnavailable];
+        return [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceApptentive) returnCode:MPKitReturnCodeUnavailable];
     }
-}
-
-- (MPKitExecStatus *)routeCommerceEvent:(MPCommerceEvent *)commerceEvent {
-    if (commerceEvent.kind == MPCommerceEventKindProduct) {
-        MPTransactionAttributes *transactionAttributes = commerceEvent.transactionAttributes;
-        NSMutableArray *commerceItems = [NSMutableArray arrayWithCapacity:commerceEvent.products.count];
-        MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeSuccess forwardCount:0];
-
-        for (MPProduct *product in commerceEvent.products) {
-            NSDictionary *item = [Apptentive extendedDataCommerceItemWithItemID:product.sku name:product.name category:product.category price:product.price quantity:product.quantity currency:commerceEvent.currency];
-
-            [commerceItems addObject:item];
-            [execStatus incrementForwardCount];
-        }
-
-        NSDictionary *commerceData = [Apptentive extendedDataCommerceWithTransactionID:transactionAttributes.transactionId affiliation:transactionAttributes.affiliation revenue:transactionAttributes.revenue shipping:transactionAttributes.shipping tax:transactionAttributes.tax currency:commerceEvent.currency commerceItems:commerceItems];
-        [execStatus incrementForwardCount];
-
-        NSString *eventName = [NSString stringWithFormat:@"eCommerce - %@", [self nameForCommerceEventAction:commerceEvent.action]];
-        [[Apptentive sharedConnection] engage:eventName withCustomData:nil withExtendedData:@[commerceData] fromViewController:nil];
-        [execStatus incrementForwardCount];
-
-        return execStatus;
-    }
-    return [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeUnavailable];
 }
 
 #pragma mark Events
@@ -301,9 +273,9 @@ static NSString * _apptentiveSignature = nil;
 
 
     if ([eventValues count] > 0) {
-        [[Apptentive sharedConnection] engage:event.name withCustomData:[self parseEventInfoDictionary:eventValues] fromViewController:rootViewController];
+        [Apptentive.shared engage:event.name withCustomData:[self parseEventInfoDictionary:eventValues] fromViewController:rootViewController];
     } else {
-        [[Apptentive sharedConnection] engage:event.name fromViewController:rootViewController];
+        [Apptentive.shared engage:event.name fromViewController:rootViewController];
     }
     return [self execStatus:MPKitReturnCodeSuccess];
 }
@@ -312,14 +284,6 @@ static NSString * _apptentiveSignature = nil;
 
 - (MPKitExecStatus *)logScreen:(MPEvent *)event {
     return [self logBaseEvent:event];
-}
-
-#pragma mark Conversation state
-
-- (void)conversationStateChangedNotification:(NSNotification *)notification {
-    NSNumber *currentUserId = MParticle.sharedInstance.identity.currentUser.userId;
-
-    [Apptentive.shared setMParticleId:[currentUserId isEqualToNumber:@0] ? nil : currentUserId.stringValue];
 }
 
 #pragma mark Helpers

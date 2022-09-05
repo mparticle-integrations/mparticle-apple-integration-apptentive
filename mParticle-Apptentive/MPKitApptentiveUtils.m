@@ -27,7 +27,7 @@ id MPKitApptentiveParseValue(NSString *value) {
     }
     
     NSNumber *number = parseNumber(value);
-    if (number) {
+    if (number != nil) {
         return number;
     }
     
