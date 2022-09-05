@@ -15,16 +15,16 @@ let package = Package(
       .package(name: "mParticle-Apple-SDK",
                url: "https://github.com/mParticle/mparticle-apple-sdk",
                .upToNextMajor(from: "8.0.0")),
-      .package(name: "Apptentive",
-               url: "https://github.com/gymshark/apptentive-ios",
-               .upToNextMajor(from: "5.0.0")),
+      .package(name: "ApptentiveKit",
+               url: "https://github.com/apptentive/apptentive-kit-ios",
+               .upToNextMajor(from: "6.0.0")),
     ],
     targets: [
         .target(
             name: "mParticle-Apptentive",
             dependencies: [
               .byName(name: "mParticle-Apple-SDK"),
-              .byName(name: "Apptentive")
+              .byName(name: "ApptentiveKit")
             ],
             path: "./mParticle-Apptentive",
             exclude: ["Info.plist"]
