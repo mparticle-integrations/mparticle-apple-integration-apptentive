@@ -7,13 +7,13 @@ This repository contains the [Apptentive](https://www.apptentive.com) integratio
 1. Add the kit dependency to your app's Podfile or Cartfile:
 
     ```
-    pod 'mParticle-Apptentive', '~> 7.0'
+    pod 'mParticle-Apptentive', '~> 8'
     ```
 
     OR
 
     ```
-    github "mparticle-integrations/mparticle-apple-integration-apptentive" ~> 7.0
+    github "mparticle-integrations/mparticle-apple-integration-apptentive" ~> 8.0
     ```
 
 2. Follow the mParticle iOS SDK [quick-start](https://github.com/mParticle/mparticle-apple-sdk), then rebuild and launch your app, and verify that you see `"Included kits: { Apptentive }"` in your Xcode console 
