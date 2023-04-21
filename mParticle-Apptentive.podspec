@@ -14,5 +14,5 @@ Pod::Spec.new do |s|
     s.ios.deployment_target = "11.0"
     s.ios.source_files      = 'mParticle-Apptentive/*.{h,m,mm}'
     s.ios.dependency 'mParticle-Apple-SDK/mParticle', '~> 8.7'
-    s.ios.dependency 'ApptentiveKit', '~> 6.1.0'
+    s.ios.dependency 'ApptentiveKit', '~> 6.1'
 end
