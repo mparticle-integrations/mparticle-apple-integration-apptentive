@@ -1,0 +1,25 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "ApptentiveKit",
+        "repositoryURL": "https://github.com/apptentive/apptentive-kit-ios",
+        "state": {
+          "branch": null,
+          "revision": "31e5c7d9329274e06586efad68b9a4ed78674397",
+          "version": "6.0.4"
+        }
+      },
+      {
+        "package": "mParticle-Apple-SDK",
+        "repositoryURL": "https://github.com/mParticle/mparticle-apple-sdk",
+        "state": {
+          "branch": null,
+          "revision": "16714563060e2b1b5349c4cab8599b8926e89ca3",
+          "version": "8.8.1"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

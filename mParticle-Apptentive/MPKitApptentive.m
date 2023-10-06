@@ -3,8 +3,6 @@
 
 #if defined(__has_include) && __has_include(<ApptentiveKit/ApptentiveKit-Swift.h>)
 #import <ApptentiveKit/ApptentiveKit-Swift.h>
-#elif defined(__has_include) && __has_include(ApptentiveKit-Swift.h)
-#import "ApptentiveKit-Swift.h"
 #else
 @import ApptentiveKit;
 #endif
@@ -270,10 +268,14 @@ static NSString * _apptentiveSignature = nil;
 
 - (MPKitExecStatus *)routeEvent:(MPEvent *)event {
     NSDictionary *eventValues = event.customAttributes;
+
+    UIViewController * rootViewController = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
+
+
     if ([eventValues count] > 0) {
-        [Apptentive.shared engage:event.name withCustomData:[self parseEventInfoDictionary:eventValues] fromViewController:nil];
+        [Apptentive.shared engage:event.name withCustomData:[self parseEventInfoDictionary:eventValues] fromViewController:rootViewController];
     } else {
-        [Apptentive.shared engage:event.name fromViewController:nil];
+        [Apptentive.shared engage:event.name fromViewController:rootViewController];
     }
     return [self execStatus:MPKitReturnCodeSuccess];
 }
