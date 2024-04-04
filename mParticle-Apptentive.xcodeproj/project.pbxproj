@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D330F1682BBEE0AC005CB4CD /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = D330F1672BBEE0AC005CB4CD /* PrivacyInfo.xcprivacy */; };
 		D37EFA8724F430580091B75B /* ApptentiveKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB695FB21F5F549A00A7F4CF /* ApptentiveKit.framework */; platformFilter = ios; };
 		DB7E05A61CB819D300967FDF /* MPKitApptentive.h in Headers */ = {isa = PBXBuildFile; fileRef = DB7E05A41CB819D300967FDF /* MPKitApptentive.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DB7E05A71CB819D300967FDF /* MPKitApptentive.m in Sources */ = {isa = PBXBuildFile; fileRef = DB7E05A51CB819D300967FDF /* MPKitApptentive.m */; };
@@ -29,6 +30,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		D330F1672BBEE0AC005CB4CD /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		DB695FB21F5F549A00A7F4CF /* ApptentiveKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApptentiveKit.framework; path = Carthage/Build/iOS/ApptentiveKit.framework; sourceTree = "<group>"; };
 		DB7E05A41CB819D300967FDF /* MPKitApptentive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPKitApptentive.h; sourceTree = "<group>"; };
 		DB7E05A51CB819D300967FDF /* MPKitApptentive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPKitApptentive.m; sourceTree = "<group>"; };
@@ -89,6 +91,7 @@
 			children = (
 				DB7E05A41CB819D300967FDF /* MPKitApptentive.h */,
 				DB7E05A51CB819D300967FDF /* MPKitApptentive.m */,
+				D330F1672BBEE0AC005CB4CD /* PrivacyInfo.xcprivacy */,
 				EF23381C263F48B2004B1C55 /* MPKitApptentiveUtils.h */,
 				EF23381D263F48B2004B1C55 /* MPKitApptentiveUtils.m */,
 				DB94016F1CB703F2007ABB18 /* mParticle_Apptentive.h */,
@@ -203,6 +206,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D330F1682BBEE0AC005CB4CD /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
