@@ -1,12 +1,14 @@
 #import "MPKitApptentive.h"
 #import "MPKitApptentiveUtils.h"
 
-#if defined(__has_include) && __has_include(<ApptentiveKit/ApptentiveKit-Swift.h>)
-#import <ApptentiveKit/ApptentiveKit-Swift.h>
-#elif defined(__has_include) && __has_include(ApptentiveKit-Swift.h)
-#import "ApptentiveKit-Swift.h"
+#if SWIFT_PACKAGE
+    @import ApptentiveKit;
 #else
-@import ApptentiveKit;
+#if __has_include(<ApptentiveKit/ApptentiveKit-Swift.h>)
+    #import <ApptentiveKit/ApptentiveKit-Swift.h>
+#else
+    #import "ApptentiveKit-Swift.h"
+#endif
 #endif
 
 static NSString * const apptentiveAppKeyKey = @"apptentiveAppKey";
