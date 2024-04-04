@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name             = "mParticle-Apptentive"
-    s.version          = "8.1.0"
+    s.version          = "8.2.0"
     s.summary          = "Apptentive integration for mParticle"
     s.description      = <<-DESC
                        This is the Apptentive integration for mParticle.
@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
     s.homepage         = "https://www.mparticle.com"
     s.license          = { :type => 'Apache 2.0', :file => 'LICENSE' }
     s.author           = { "mParticle" => "support@mparticle.com" }
-    s.source           = { :git => "https://github.com/mparticle-integrations/mparticle-apple-integration-apptentive.git", :tag => s.version.to_s }
+    s.source           = { :git => "https://github.com/mparticle-integrations/mparticle-apple-integration-apptentive.git", :tag => "v" +s.version.to_s }
     s.social_media_url = "https://twitter.com/mparticle"
     s.swift_version = "5.5"
     s.ios.deployment_target = "13.0"
