@@ -3,16 +3,16 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		53C0DA722BEAA5F400356F52 /* ApptentiveKit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53C0DA702BEAA5F400356F52 /* ApptentiveKit.xcframework */; };
+		53C0DA732BEAA5F400356F52 /* mParticle_Apple_SDK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53C0DA712BEAA5F400356F52 /* mParticle_Apple_SDK.xcframework */; };
 		D330F1682BBEE0AC005CB4CD /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = D330F1672BBEE0AC005CB4CD /* PrivacyInfo.xcprivacy */; };
-		D37EFA8724F430580091B75B /* ApptentiveKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB695FB21F5F549A00A7F4CF /* ApptentiveKit.framework */; platformFilter = ios; };
 		DB7E05A61CB819D300967FDF /* MPKitApptentive.h in Headers */ = {isa = PBXBuildFile; fileRef = DB7E05A41CB819D300967FDF /* MPKitApptentive.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DB7E05A71CB819D300967FDF /* MPKitApptentive.m in Sources */ = {isa = PBXBuildFile; fileRef = DB7E05A51CB819D300967FDF /* MPKitApptentive.m */; };
 		DB9401701CB703F2007ABB18 /* mParticle_Apptentive.h in Headers */ = {isa = PBXBuildFile; fileRef = DB94016F1CB703F2007ABB18 /* mParticle_Apptentive.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		DB94017A1CB70C58007ABB18 /* mParticle_Apple_SDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB9401781CB70C58007ABB18 /* mParticle_Apple_SDK.framework */; };
 		EF233800263F3F0F004B1C55 /* mParticle_ApptentiveTests.m in Sources */ = {isa = PBXBuildFile; fileRef = EF2337FF263F3F0F004B1C55 /* mParticle_ApptentiveTests.m */; };
 		EF233802263F3F0F004B1C55 /* mParticle_Apptentive.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB94016C1CB703F2007ABB18 /* mParticle_Apptentive.framework */; };
 		EF23381E263F48B2004B1C55 /* MPKitApptentiveUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = EF23381C263F48B2004B1C55 /* MPKitApptentiveUtils.h */; };
@@ -30,14 +30,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		53C0DA702BEAA5F400356F52 /* ApptentiveKit.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = ApptentiveKit.xcframework; path = Carthage/Build/ApptentiveKit.xcframework; sourceTree = "<group>"; };
+		53C0DA712BEAA5F400356F52 /* mParticle_Apple_SDK.xcframework */ = {isa = PBXFileReference; expectedSignature = "AppleDeveloperProgram:DLD43Y3TRP:mParticle, inc"; lastKnownFileType = wrapper.xcframework; name = mParticle_Apple_SDK.xcframework; path = Carthage/Build/mParticle_Apple_SDK.xcframework; sourceTree = "<group>"; };
 		D330F1672BBEE0AC005CB4CD /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		DB695FB21F5F549A00A7F4CF /* ApptentiveKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApptentiveKit.framework; path = Carthage/Build/iOS/ApptentiveKit.framework; sourceTree = "<group>"; };
 		DB7E05A41CB819D300967FDF /* MPKitApptentive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPKitApptentive.h; sourceTree = "<group>"; };
 		DB7E05A51CB819D300967FDF /* MPKitApptentive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPKitApptentive.m; sourceTree = "<group>"; };
 		DB94016C1CB703F2007ABB18 /* mParticle_Apptentive.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = mParticle_Apptentive.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DB94016F1CB703F2007ABB18 /* mParticle_Apptentive.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mParticle_Apptentive.h; sourceTree = "<group>"; };
 		DB9401711CB703F2007ABB18 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		DB9401781CB70C58007ABB18 /* mParticle_Apple_SDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = mParticle_Apple_SDK.framework; path = Carthage/Build/iOS/mParticle_Apple_SDK.framework; sourceTree = "<group>"; };
 		EF2337FD263F3F0F004B1C55 /* mParticle-ApptentiveTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "mParticle-ApptentiveTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF2337FF263F3F0F004B1C55 /* mParticle_ApptentiveTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mParticle_ApptentiveTests.m; sourceTree = "<group>"; };
 		EF233801263F3F0F004B1C55 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -50,8 +50,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D37EFA8724F430580091B75B /* ApptentiveKit.framework in Frameworks */,
-				DB94017A1CB70C58007ABB18 /* mParticle_Apple_SDK.framework in Frameworks */,
+				53C0DA722BEAA5F400356F52 /* ApptentiveKit.xcframework in Frameworks */,
+				53C0DA732BEAA5F400356F52 /* mParticle_Apple_SDK.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -69,8 +69,8 @@
 		DB9401621CB703F2007ABB18 = {
 			isa = PBXGroup;
 			children = (
-				DB695FB21F5F549A00A7F4CF /* ApptentiveKit.framework */,
-				DB9401781CB70C58007ABB18 /* mParticle_Apple_SDK.framework */,
+				53C0DA702BEAA5F400356F52 /* ApptentiveKit.xcframework */,
+				53C0DA712BEAA5F400356F52 /* mParticle_Apple_SDK.xcframework */,
 				DB94016E1CB703F2007ABB18 /* mParticle-Apptentive */,
 				EF2337FE263F3F0F004B1C55 /* mParticle-ApptentiveTests */,
 				DB94016D1CB703F2007ABB18 /* Products */,
