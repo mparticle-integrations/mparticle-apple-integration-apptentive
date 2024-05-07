@@ -13,7 +13,7 @@ let package = Package(
     ],
     dependencies: [
       .package(url: "https://github.com/mParticle/mparticle-apple-sdk",
-               .upToNextMajor(from: "8.0.0")),
+               .upToNextMajor(from: "8.22.0")),
       .package(url: "https://github.com/apptentive/apptentive-kit-ios",
                .upToNextMajor(from: "6.6.0")),
     ],
@@ -26,6 +26,7 @@ let package = Package(
             ],
             path: "mParticle-Apptentive",
             exclude: ["Info.plist"],
+            resources: [.process("PrivacyInfo.xcprivacy")],
             publicHeadersPath: "."),
     ]
 )

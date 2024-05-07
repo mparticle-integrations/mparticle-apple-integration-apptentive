@@ -13,6 +13,7 @@ Pod::Spec.new do |s|
     s.swift_version = "5.5"
     s.ios.deployment_target = "13.0"
     s.ios.source_files      = 'mParticle-Apptentive/*.{h,m,mm}'
-    s.ios.dependency 'mParticle-Apple-SDK/mParticle', '~> 8.7'
+    s.ios.resource_bundles  = { 'mParticle-Apptentive-Privacy' => ['mParticle-Apptentive/PrivacyInfo.xcprivacy'] }
+    s.ios.dependency 'mParticle-Apple-SDK/mParticle', '~> 8.22'
     s.ios.dependency 'ApptentiveKit', '~> 6.6'
 end
